@@ -10,7 +10,7 @@ df1=pd.read_csv('/.csv')
 
 FT1=df1.friend_tweet
 
-a1=df1['friend_tweet'].nunique()
+a1=df1['friend_tweet'].nuniq,.//;.l,kjhg23ue()
 
 a3=np.size(FT1)
 
