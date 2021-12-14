@@ -1,0 +1,308 @@
+id,keyword A,keyword C,exist_B,num_B,meaningful,keywords B
+id1,politician,drug,False,0, ,[]
+id1,politician,mcconnell,False,0, ,[]
+id1,politician,pound,False,0, ,[]
+id1,politician,cocaine,False,0, ,[]
+id1,politician,senate,False,0, ,[]
+id1,politician,find,False,0, ,[]
+id1,politician,majority,False,0, ,[]
+id1,politician,anti,False,0, ,[]
+id1,politician,ship,False,0, ,[]
+id1,politician,cargo,False,0, ,[]
+id1,politician,leader,False,0, ,[]
+id1,politician,mitch,False,0, ,[]
+id1,drug,mcconnell,True,46, ,"[('million', 6), ('senate', 6), ('elaine', 6), ('year', 6), ('mitch', 6), ('chao', 6), ('colombia', 6), ('china', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('dollar', 4), ('cocaine', 4), ('maritime', 2), ('foremost', 2), ('washington', 2), ('pound', 2), ('marta', 2), ('james', 2), ('santa', 2), ('republican', 2), ('august', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('corporation', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('virginia', 1), ('netherlands', 1), ('joe', 1), ('second', 1), ('blankenship', 1), ('transportation', 1), ('west', 1), ('american', 1), ('manchin', 1), ('ago', 1), ('don', 1), ('liberia', 1), ('state', 1)]"
+id1,drug,pound,True,46, ,"[('million', 5), ('senate', 5), ('elaine', 5), ('year', 5), ('mitch', 5), ('chao', 5), ('mcconnell', 5), ('colombia', 5), ('china', 5), ('europe', 3), ('chinese', 3), ('united', 3), ('states', 3), ('dollar', 3), ('cocaine', 3), ('maritime', 2), ('foremost', 2), ('washington', 2), ('marta', 2), ('james', 2), ('santa', 2), ('republican', 2), ('august', 2), ('corporation', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('virginia', 1), ('netherlands', 1), ('joe', 1), ('second', 1), ('blankenship', 1), ('transportation', 1), ('west', 1), ('american', 1), ('manchin', 1), ('ago', 1), ('don', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,drug,cocaine,True,39, ,"[('dollar', 4), ('million', 4), ('senate', 4), ('elaine', 4), ('year', 4), ('mitch', 4), ('mcconnell', 4), ('chao', 4), ('colombia', 4), ('china', 4), ('family', 2), ('europe', 2), ('schweizer', 2), ('chinese', 2), ('united', 2), ('states', 2), ('peter', 2), ('virginia', 1), ('maritime', 1), ('netherlands', 1), ('joe', 1), ('foremost', 1), ('marta', 1), ('pound', 1), ('washington', 1), ('second', 1), ('blankenship', 1), ('transportation', 1), ('james', 1), ('santa', 1), ('republican', 1), ('west', 1), ('american', 1), ('manchin', 1), ('august', 1), ('ago', 1), ('don', 1), ('corporation', 1), ('state', 1)]"
+id1,drug,senate,True,46, ,"[('million', 6), ('elaine', 6), ('year', 6), ('mitch', 6), ('chao', 6), ('mcconnell', 6), ('colombia', 6), ('china', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('dollar', 4), ('cocaine', 4), ('maritime', 2), ('foremost', 2), ('washington', 2), ('pound', 2), ('marta', 2), ('james', 2), ('santa', 2), ('republican', 2), ('august', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('corporation', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('virginia', 1), ('netherlands', 1), ('joe', 1), ('second', 1), ('blankenship', 1), ('transportation', 1), ('west', 1), ('american', 1), ('manchin', 1), ('ago', 1), ('don', 1), ('liberia', 1), ('state', 1)]"
+id1,drug,find,False,0, ,[]
+id1,drug,majority,False,0, ,[]
+id1,drug,anti,False,0, ,[]
+id1,drug,ship,True,18, ,"[('dollar', 1), ('family', 1), ('europe', 1), ('schweizer', 1), ('million', 1), ('senate', 1), ('elaine', 1), ('year', 1), ('chinese', 1), ('mitch', 1), ('mcconnell', 1), ('chao', 1), ('united', 1), ('cocaine', 1), ('colombia', 1), ('china', 1), ('states', 1), ('peter', 1)]"
+id1,drug,cargo,False,0, ,[]
+id1,drug,leader,False,0, ,[]
+id1,drug,mitch,True,46, ,"[('million', 6), ('senate', 6), ('elaine', 6), ('year', 6), ('chao', 6), ('mcconnell', 6), ('colombia', 6), ('china', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('dollar', 4), ('cocaine', 4), ('maritime', 2), ('foremost', 2), ('washington', 2), ('pound', 2), ('marta', 2), ('james', 2), ('santa', 2), ('republican', 2), ('august', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('corporation', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('virginia', 1), ('netherlands', 1), ('joe', 1), ('second', 1), ('blankenship', 1), ('transportation', 1), ('west', 1), ('american', 1), ('manchin', 1), ('ago', 1), ('don', 1), ('liberia', 1), ('state', 1)]"
+id1,mcconnell,pound,True,49, ,"[('million', 9), ('senate', 9), ('elaine', 9), ('year', 9), ('mitch', 9), ('chao', 9), ('colombia', 9), ('china', 9), ('maritime', 6), ('foremost', 6), ('washington', 6), ('marta', 6), ('james', 6), ('santa', 6), ('republican', 6), ('august', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('dollar', 4), ('cocaine', 4), ('corporation', 4), ('new', 2), ('month', 2), ('colombian', 2), ('ping', 2), ('nation', 2), ('york', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('week', 2), ('post', 2), ('late', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,mcconnell,cocaine,True,49, ,"[('million', 9), ('senate', 9), ('elaine', 9), ('year', 9), ('mitch', 9), ('chao', 9), ('colombia', 9), ('china', 9), ('dollar', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('maritime', 4), ('foremost', 4), ('marta', 4), ('pound', 4), ('washington', 4), ('james', 4), ('santa', 4), ('republican', 4), ('august', 4), ('corporation', 4), ('drug', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('state', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('liberia', 1), ('week', 1), ('post', 1), ('late', 1)]"
+id1,mcconnell,senate,True,49, ,"[('million', 12), ('elaine', 12), ('year', 12), ('mitch', 12), ('chao', 12), ('colombia', 12), ('china', 12), ('maritime', 6), ('foremost', 6), ('europe', 6), ('washington', 6), ('pound', 6), ('marta', 6), ('james', 6), ('chinese', 6), ('santa', 6), ('republican', 6), ('united', 6), ('states', 6), ('august', 6), ('dollar', 6), ('cocaine', 6), ('corporation', 6), ('new', 2), ('month', 2), ('colombian', 2), ('ping', 2), ('nation', 2), ('york', 2), ('drug', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('liberia', 2), ('week', 2), ('post', 2), ('late', 2), ('state', 2)]"
+id1,mcconnell,find,False,0, ,[]
+id1,mcconnell,majority,False,0, ,[]
+id1,mcconnell,anti,False,0, ,[]
+id1,mcconnell,ship,True,21, ,"[('million', 3), ('senate', 3), ('elaine', 3), ('year', 3), ('mitch', 3), ('chao', 3), ('colombia', 3), ('china', 3), ('dollar', 2), ('europe', 2), ('chinese', 2), ('united', 2), ('cocaine', 2), ('states', 2), ('corporation', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,mcconnell,cargo,False,0, ,[]
+id1,mcconnell,leader,False,0, ,[]
+id1,mcconnell,mitch,True,49, ,"[('million', 12), ('senate', 12), ('elaine', 12), ('year', 12), ('chao', 12), ('colombia', 12), ('china', 12), ('maritime', 6), ('foremost', 6), ('europe', 6), ('washington', 6), ('pound', 6), ('marta', 6), ('james', 6), ('chinese', 6), ('santa', 6), ('republican', 6), ('united', 6), ('states', 6), ('august', 6), ('dollar', 6), ('cocaine', 6), ('corporation', 6), ('new', 2), ('month', 2), ('colombian', 2), ('ping', 2), ('nation', 2), ('york', 2), ('drug', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('liberia', 2), ('week', 2), ('post', 2), ('late', 2), ('state', 2)]"
+id1,pound,cocaine,True,49, ,"[('million', 7), ('senate', 7), ('elaine', 7), ('year', 7), ('mitch', 7), ('mcconnell', 7), ('chao', 7), ('colombia', 7), ('china', 7), ('dollar', 4), ('maritime', 4), ('foremost', 4), ('marta', 4), ('washington', 4), ('james', 4), ('santa', 4), ('republican', 4), ('august', 4), ('europe', 3), ('chinese', 3), ('united', 3), ('states', 3), ('corporation', 3), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('liberia', 1), ('week', 1), ('post', 1), ('late', 1), ('state', 1)]"
+id1,pound,senate,True,49, ,"[('million', 9), ('elaine', 9), ('year', 9), ('mitch', 9), ('chao', 9), ('mcconnell', 9), ('colombia', 9), ('china', 9), ('maritime', 6), ('foremost', 6), ('washington', 6), ('marta', 6), ('james', 6), ('santa', 6), ('republican', 6), ('august', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('dollar', 4), ('cocaine', 4), ('corporation', 4), ('new', 2), ('month', 2), ('colombian', 2), ('ping', 2), ('nation', 2), ('york', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('week', 2), ('post', 2), ('late', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,pound,find,False,0, ,[]
+id1,pound,majority,False,0, ,[]
+id1,pound,anti,False,0, ,[]
+id1,pound,ship,True,22, ,"[('million', 3), ('senate', 3), ('elaine', 3), ('year', 3), ('mitch', 3), ('mcconnell', 3), ('chao', 3), ('colombia', 3), ('china', 3), ('dollar', 2), ('europe', 2), ('chinese', 2), ('united', 2), ('cocaine', 2), ('states', 2), ('corporation', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,pound,cargo,False,0, ,[]
+id1,pound,leader,False,0, ,[]
+id1,pound,mitch,True,49, ,"[('million', 9), ('senate', 9), ('elaine', 9), ('year', 9), ('chao', 9), ('mcconnell', 9), ('colombia', 9), ('china', 9), ('maritime', 6), ('foremost', 6), ('washington', 6), ('marta', 6), ('james', 6), ('santa', 6), ('republican', 6), ('august', 6), ('europe', 4), ('chinese', 4), ('united', 4), ('states', 4), ('dollar', 4), ('cocaine', 4), ('corporation', 4), ('new', 2), ('month', 2), ('colombian', 2), ('ping', 2), ('nation', 2), ('york', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('week', 2), ('post', 2), ('late', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,cocaine,senate,True,49, ,"[('million', 9), ('elaine', 9), ('year', 9), ('mitch', 9), ('chao', 9), ('mcconnell', 9), ('colombia', 9), ('china', 9), ('dollar', 6), ('maritime', 4), ('foremost', 4), ('europe', 4), ('washington', 4), ('pound', 4), ('marta', 4), ('james', 4), ('chinese', 4), ('santa', 4), ('republican', 4), ('united', 4), ('states', 4), ('august', 4), ('corporation', 4), ('drug', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('state', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('liberia', 1), ('week', 1), ('post', 1), ('late', 1)]"
+id1,cocaine,find,False,0, ,[]
+id1,cocaine,majority,False,0, ,[]
+id1,cocaine,anti,False,0, ,[]
+id1,cocaine,ship,True,20, ,"[('dollar', 2), ('million', 2), ('senate', 2), ('elaine', 2), ('year', 2), ('mitch', 2), ('mcconnell', 2), ('chao', 2), ('colombia', 2), ('china', 2), ('drug', 1), ('family', 1), ('europe', 1), ('schweizer', 1), ('chinese', 1), ('united', 1), ('states', 1), ('peter', 1), ('corporation', 1), ('state', 1)]"
+id1,cocaine,cargo,False,0, ,[]
+id1,cocaine,leader,False,0, ,[]
+id1,cocaine,mitch,True,49, ,"[('million', 9), ('senate', 9), ('elaine', 9), ('year', 9), ('chao', 9), ('mcconnell', 9), ('colombia', 9), ('china', 9), ('dollar', 6), ('maritime', 4), ('foremost', 4), ('europe', 4), ('washington', 4), ('pound', 4), ('marta', 4), ('james', 4), ('chinese', 4), ('santa', 4), ('republican', 4), ('united', 4), ('states', 4), ('august', 4), ('corporation', 4), ('drug', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('state', 2), ('new', 1), ('month', 1), ('colombian', 1), ('ping', 1), ('nation', 1), ('york', 1), ('liberia', 1), ('week', 1), ('post', 1), ('late', 1)]"
+id1,senate,find,False,0, ,[]
+id1,senate,majority,False,0, ,[]
+id1,senate,anti,False,0, ,[]
+id1,senate,ship,True,21, ,"[('million', 3), ('elaine', 3), ('year', 3), ('mitch', 3), ('mcconnell', 3), ('chao', 3), ('colombia', 3), ('china', 3), ('dollar', 2), ('europe', 2), ('chinese', 2), ('united', 2), ('cocaine', 2), ('states', 2), ('corporation', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,senate,cargo,False,0, ,[]
+id1,senate,leader,False,0, ,[]
+id1,senate,mitch,True,49, ,"[('million', 12), ('elaine', 12), ('year', 12), ('chao', 12), ('mcconnell', 12), ('colombia', 12), ('china', 12), ('maritime', 6), ('foremost', 6), ('europe', 6), ('washington', 6), ('pound', 6), ('marta', 6), ('james', 6), ('chinese', 6), ('santa', 6), ('republican', 6), ('united', 6), ('states', 6), ('august', 6), ('dollar', 6), ('cocaine', 6), ('corporation', 6), ('new', 2), ('month', 2), ('colombian', 2), ('ping', 2), ('nation', 2), ('york', 2), ('drug', 2), ('family', 2), ('schweizer', 2), ('peter', 2), ('virginia', 2), ('netherlands', 2), ('joe', 2), ('second', 2), ('blankenship', 2), ('transportation', 2), ('west', 2), ('american', 2), ('manchin', 2), ('ago', 2), ('don', 2), ('liberia', 2), ('week', 2), ('post', 2), ('late', 2), ('state', 2)]"
+id1,find,majority,False,0, ,[]
+id1,find,anti,False,0, ,[]
+id1,find,ship,False,0, ,[]
+id1,find,cargo,False,0, ,[]
+id1,find,leader,False,0, ,[]
+id1,find,mitch,False,0, ,[]
+id1,majority,anti,False,0, ,[]
+id1,majority,ship,False,0, ,[]
+id1,majority,cargo,False,0, ,[]
+id1,majority,leader,False,0, ,[]
+id1,majority,mitch,False,0, ,[]
+id1,anti,ship,False,0, ,[]
+id1,anti,cargo,False,0, ,[]
+id1,anti,leader,False,0, ,[]
+id1,anti,mitch,False,0, ,[]
+id1,ship,cargo,False,0, ,[]
+id1,ship,leader,False,0, ,[]
+id1,ship,mitch,True,21, ,"[('million', 3), ('senate', 3), ('elaine', 3), ('year', 3), ('mcconnell', 3), ('chao', 3), ('colombia', 3), ('china', 3), ('dollar', 2), ('europe', 2), ('chinese', 2), ('united', 2), ('cocaine', 2), ('states', 2), ('corporation', 2), ('drug', 1), ('family', 1), ('schweizer', 1), ('peter', 1), ('liberia', 1), ('state', 1)]"
+id1,cargo,leader,False,0, ,[]
+id1,cargo,mitch,False,0, ,[]
+id1,leader,mitch,False,0, ,[]
+id2,lunch,program,False,0, ,[]
+id2,lunch,october,False,0, ,[]
+id2,lunch,school,False,0, ,[]
+id2,lunch,obama,False,0, ,[]
+id2,lunch,trump,False,0, ,[]
+id2,lunch,michelle,False,0, ,[]
+id2,lunch,cancel,False,0, ,[]
+id2,lunch,president,False,0, ,[]
+id2,program,october,False,0, ,[]
+id2,program,school,False,0, ,[]
+id2,program,obama,False,0, ,[]
+id2,program,trump,False,0, ,[]
+id2,program,michelle,False,0, ,[]
+id2,program,cancel,False,0, ,[]
+id2,program,president,False,0, ,[]
+id2,october,school,True,15, ,"[('science', 1), ('sonny', 1), ('percent', 1), ('administration', 1), ('agriculture', 1), ('obama', 1), ('year', 1), ('center', 1), ('trump', 1), ('georgia', 1), ('michelle', 1), ('monday', 1), ('perdue', 1), ('wootan', 1), ('elementary', 1)]"
+id2,october,obama,True,15, ,"[('science', 1), ('sonny', 1), ('percent', 1), ('administration', 1), ('agriculture', 1), ('school', 1), ('year', 1), ('center', 1), ('trump', 1), ('georgia', 1), ('michelle', 1), ('monday', 1), ('perdue', 1), ('wootan', 1), ('elementary', 1)]"
+id2,october,trump,True,15, ,"[('science', 1), ('sonny', 1), ('percent', 1), ('administration', 1), ('agriculture', 1), ('school', 1), ('obama', 1), ('year', 1), ('center', 1), ('georgia', 1), ('michelle', 1), ('monday', 1), ('perdue', 1), ('wootan', 1), ('elementary', 1)]"
+id2,october,michelle,True,15, ,"[('science', 1), ('sonny', 1), ('percent', 1), ('administration', 1), ('agriculture', 1), ('school', 1), ('obama', 1), ('year', 1), ('center', 1), ('trump', 1), ('georgia', 1), ('monday', 1), ('perdue', 1), ('wootan', 1), ('elementary', 1)]"
+id2,october,cancel,False,0, ,[]
+id2,october,president,False,0, ,[]
+id2,school,obama,True,14, ,"[('science', 2), ('sonny', 2), ('percent', 2), ('administration', 2), ('agriculture', 2), ('year', 2), ('center', 2), ('trump', 2), ('georgia', 2), ('michelle', 2), ('monday', 2), ('perdue', 2), ('wootan', 2), ('elementary', 2)]"
+id2,school,trump,True,14, ,"[('science', 2), ('sonny', 2), ('percent', 2), ('administration', 2), ('agriculture', 2), ('obama', 2), ('year', 2), ('center', 2), ('georgia', 2), ('michelle', 2), ('monday', 2), ('perdue', 2), ('wootan', 2), ('elementary', 2)]"
+id2,school,michelle,True,14, ,"[('science', 2), ('sonny', 2), ('percent', 2), ('administration', 2), ('agriculture', 2), ('obama', 2), ('year', 2), ('center', 2), ('trump', 2), ('georgia', 2), ('monday', 2), ('perdue', 2), ('wootan', 2), ('elementary', 2)]"
+id2,school,cancel,False,0, ,[]
+id2,school,president,False,0, ,[]
+id2,obama,trump,True,14, ,"[('science', 2), ('sonny', 2), ('percent', 2), ('administration', 2), ('agriculture', 2), ('school', 2), ('year', 2), ('center', 2), ('georgia', 2), ('michelle', 2), ('monday', 2), ('perdue', 2), ('wootan', 2), ('elementary', 2)]"
+id2,obama,michelle,True,14, ,"[('science', 2), ('sonny', 2), ('percent', 2), ('administration', 2), ('agriculture', 2), ('school', 2), ('year', 2), ('center', 2), ('trump', 2), ('georgia', 2), ('monday', 2), ('perdue', 2), ('wootan', 2), ('elementary', 2)]"
+id2,obama,cancel,False,0, ,[]
+id2,obama,president,False,0, ,[]
+id2,trump,michelle,True,14, ,"[('science', 2), ('sonny', 2), ('percent', 2), ('administration', 2), ('agriculture', 2), ('school', 2), ('obama', 2), ('year', 2), ('center', 2), ('georgia', 2), ('monday', 2), ('perdue', 2), ('wootan', 2), ('elementary', 2)]"
+id2,trump,cancel,False,0, ,[]
+id2,trump,president,False,0, ,[]
+id2,michelle,cancel,False,0, ,[]
+id2,michelle,president,False,0, ,[]
+id2,cancel,president,False,0, ,[]
+id3,family,catch,False,0, ,[]
+id3,family,obama,True,38, ,"[('year', 5), ('ernst', 5), ('georgetown', 3), ('gordon', 3), ('million', 3), ('university', 3), ('massachusetts', 3), ('island', 3), ('rhode', 3), ('tuesday', 3), ('gordie', 2), ('key', 2), ('new', 2), ('malia', 2), ('sasha', 2), ('york', 2), ('michelle', 2), ('worldwide', 1), ('voice', 1), ('foundation', 1), ('california', 1), ('washington', 1), ('second', 1), ('december', 1), ('wake', 1), ('singer', 1), ('department', 1), ('forest', 1), ('justice', 1), ('stanford', 1), ('william', 1), ('usc', 1), ('coach', 1), ('journal', 1), ('tennis', 1), ('providence', 1), ('america', 1), ('old', 1)]"
+id3,family,admission,True,19, ,"[('georgetown', 1), ('december', 1), ('gordon', 1), ('wake', 1), ('singer', 1), ('island', 1), ('million', 1), ('massachusetts', 1), ('rhode', 1), ('year', 1), ('department', 1), ('forest', 1), ('justice', 1), ('university', 1), ('stanford', 1), ('tuesday', 1), ('ernst', 1), ('william', 1), ('usc', 1)]"
+id3,family,scandal,True,19, ,"[('georgetown', 1), ('december', 1), ('gordon', 1), ('wake', 1), ('singer', 1), ('island', 1), ('million', 1), ('massachusetts', 1), ('rhode', 1), ('year', 1), ('department', 1), ('forest', 1), ('justice', 1), ('university', 1), ('stanford', 1), ('tuesday', 1), ('ernst', 1), ('william', 1), ('usc', 1)]"
+id3,family,college,True,19, ,"[('georgetown', 1), ('december', 1), ('gordon', 1), ('wake', 1), ('singer', 1), ('island', 1), ('million', 1), ('massachusetts', 1), ('rhode', 1), ('year', 1), ('department', 1), ('forest', 1), ('justice', 1), ('university', 1), ('stanford', 1), ('tuesday', 1), ('ernst', 1), ('william', 1), ('usc', 1)]"
+id3,family,march,True,31, ,"[('gordon', 3), ('massachusetts', 3), ('year', 3), ('ernst', 3), ('angeles', 1), ('court', 1), ('los', 1), ('june', 1), ('second', 1), ('july', 1), ('stephen', 1), ('california', 1), ('district', 1), ('lisa', 1), ('america', 1), ('old', 1), ('georgetown', 1), ('december', 1), ('wake', 1), ('singer', 1), ('island', 1), ('million', 1), ('rhode', 1), ('department', 1), ('forest', 1), ('justice', 1), ('university', 1), ('stanford', 1), ('tuesday', 1), ('william', 1), ('usc', 1)]"
+id3,catch,obama,False,0, ,[]
+id3,catch,admission,False,0, ,[]
+id3,catch,scandal,False,0, ,[]
+id3,catch,college,False,0, ,[]
+id3,catch,march,False,0, ,[]
+id3,obama,admission,True,28, ,"[('year', 3), ('ernst', 3), ('georgetown', 2), ('gordie', 2), ('gordon', 2), ('million', 2), ('university', 2), ('key', 2), ('massachusetts', 2), ('island', 2), ('rhode', 2), ('tuesday', 2), ('worldwide', 1), ('voice', 1), ('foundation', 1), ('california', 1), ('washington', 1), ('second', 1), ('december', 1), ('wake', 1), ('singer', 1), ('family', 1), ('department', 1), ('forest', 1), ('justice', 1), ('stanford', 1), ('william', 1), ('usc', 1)]"
+id3,obama,scandal,True,28, ,"[('year', 3), ('ernst', 3), ('georgetown', 2), ('gordie', 2), ('gordon', 2), ('million', 2), ('university', 2), ('key', 2), ('massachusetts', 2), ('island', 2), ('rhode', 2), ('tuesday', 2), ('worldwide', 1), ('voice', 1), ('foundation', 1), ('california', 1), ('washington', 1), ('second', 1), ('december', 1), ('wake', 1), ('singer', 1), ('family', 1), ('department', 1), ('forest', 1), ('justice', 1), ('stanford', 1), ('william', 1), ('usc', 1)]"
+id3,obama,college,True,28, ,"[('year', 3), ('ernst', 3), ('georgetown', 2), ('gordie', 2), ('gordon', 2), ('million', 2), ('university', 2), ('key', 2), ('massachusetts', 2), ('island', 2), ('rhode', 2), ('tuesday', 2), ('worldwide', 1), ('voice', 1), ('foundation', 1), ('california', 1), ('washington', 1), ('second', 1), ('december', 1), ('wake', 1), ('singer', 1), ('family', 1), ('department', 1), ('forest', 1), ('justice', 1), ('stanford', 1), ('william', 1), ('usc', 1)]"
+id3,obama,march,True,31, ,"[('year', 6), ('ernst', 6), ('gordon', 4), ('massachusetts', 4), ('california', 2), ('georgetown', 2), ('gordie', 2), ('million', 2), ('university', 2), ('key', 2), ('island', 2), ('rhode', 2), ('tuesday', 2), ('second', 2), ('america', 2), ('old', 2), ('worldwide', 1), ('voice', 1), ('foundation', 1), ('october', 1), ('washington', 1), ('december', 1), ('wake', 1), ('singer', 1), ('family', 1), ('department', 1), ('forest', 1), ('justice', 1), ('stanford', 1), ('william', 1), ('usc', 1)]"
+id3,admission,scandal,False,0, ,[]
+id3,admission,college,False,0, ,[]
+id3,admission,march,True,14, ,"[('angeles', 1), ('gordon', 1), ('court', 1), ('los', 1), ('june', 1), ('second', 1), ('july', 1), ('stephen', 1), ('massachusetts', 1), ('year', 1), ('ernst', 1), ('california', 1), ('district', 1), ('lisa', 1)]"
+id3,scandal,college,False,0, ,[]
+id3,scandal,march,True,14, ,"[('angeles', 1), ('gordon', 1), ('court', 1), ('los', 1), ('june', 1), ('second', 1), ('july', 1), ('stephen', 1), ('massachusetts', 1), ('year', 1), ('ernst', 1), ('california', 1), ('district', 1), ('lisa', 1)]"
+id3,college,march,True,14, ,"[('angeles', 1), ('gordon', 1), ('court', 1), ('los', 1), ('june', 1), ('second', 1), ('july', 1), ('stephen', 1), ('massachusetts', 1), ('year', 1), ('ernst', 1), ('california', 1), ('district', 1), ('lisa', 1)]"
+id4,politician,contribute,False,0, ,[]
+id4,politician,million,False,0, ,[]
+id4,politician,wake,False,0, ,[]
+id4,politician,money,False,0, ,[]
+id4,politician,donald,False,0, ,[]
+id4,politician,relief,False,0, ,[]
+id4,politician,hurricane,False,0, ,[]
+id4,politician,bahama,False,0, ,[]
+id4,politician,trump,False,0, ,[]
+id4,politician,dorian,False,0, ,[]
+id4,politician,donate,False,0, ,[]
+id4,politician,fund,False,0, ,[]
+id4,politician,president,False,0, ,[]
+id4,contribute,million,False,0, ,[]
+id4,contribute,wake,False,0, ,[]
+id4,contribute,money,False,0, ,[]
+id4,contribute,donald,False,0, ,[]
+id4,contribute,relief,False,0, ,[]
+id4,contribute,hurricane,False,0, ,[]
+id4,contribute,bahama,False,0, ,[]
+id4,contribute,trump,False,0, ,[]
+id4,contribute,dorian,False,0, ,[]
+id4,contribute,donate,False,0, ,[]
+id4,contribute,fund,False,0, ,[]
+id4,contribute,president,False,0, ,[]
+id4,million,wake,False,0, ,[]
+id4,million,money,False,0, ,[]
+id4,million,donald,True,30, ,"[('florida', 8), ('carolina', 5), ('trump', 5), ('day', 5), ('hurricane', 4), ('dorian', 4), ('miami', 3), ('sept', 2), ('national', 2), ('states', 2), ('united', 2), ('university', 2), ('house', 2), ('aug', 2), ('center', 2), ('white', 2), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1)]"
+id4,million,relief,True,15, ,"[('bahama', 2), ('florida', 2), ('carolina', 2), ('dollar', 1), ('abaco', 1), ('company', 1), ('freeport', 1), ('hurricane', 1), ('grand', 1), ('dorian', 1), ('international', 1), ('bahamian', 1), ('paul', 1), ('world', 1), ('miami', 1)]"
+id4,million,hurricane,True,38, ,"[('florida', 10), ('carolina', 7), ('dorian', 6), ('day', 5), ('bahama', 4), ('trump', 4), ('miami', 3), ('abaco', 2), ('company', 2), ('freeport', 2), ('grand', 2), ('international', 2), ('bahamian', 2), ('sept', 2), ('national', 2), ('states', 2), ('united', 2), ('university', 2), ('house', 2), ('donald', 2), ('aug', 2), ('center', 2), ('white', 2), ('ap', 1), ('bahamas', 1), ('news', 1), ('twitter', 1), ('dollar', 1), ('paul', 1), ('world', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1)]"
+id4,million,bahama,True,17, ,"[('florida', 4), ('carolina', 4), ('dollar', 2), ('abaco', 2), ('company', 2), ('freeport', 2), ('hurricane', 2), ('grand', 2), ('dorian', 2), ('international', 2), ('bahamian', 2), ('paul', 1), ('world', 1), ('miami', 1), ('trump', 1), ('second', 1), ('day', 1)]"
+id4,million,trump,True,32, ,"[('florida', 8), ('carolina', 5), ('day', 5), ('hurricane', 4), ('dorian', 4), ('miami', 3), ('bahama', 2), ('sept', 2), ('national', 2), ('states', 2), ('united', 2), ('university', 2), ('house', 2), ('donald', 2), ('aug', 2), ('center', 2), ('white', 2), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1)]"
+id4,million,dorian,True,38, ,"[('florida', 10), ('carolina', 7), ('hurricane', 6), ('day', 5), ('bahama', 4), ('trump', 4), ('miami', 3), ('abaco', 2), ('company', 2), ('freeport', 2), ('grand', 2), ('international', 2), ('bahamian', 2), ('sept', 2), ('national', 2), ('states', 2), ('united', 2), ('university', 2), ('house', 2), ('donald', 2), ('aug', 2), ('center', 2), ('white', 2), ('ap', 1), ('bahamas', 1), ('news', 1), ('twitter', 1), ('dollar', 1), ('paul', 1), ('world', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1)]"
+id4,million,donate,False,0, ,[]
+id4,million,fund,True,15, ,"[('bahama', 2), ('florida', 2), ('carolina', 2), ('dollar', 1), ('abaco', 1), ('company', 1), ('freeport', 1), ('hurricane', 1), ('grand', 1), ('dorian', 1), ('international', 1), ('bahamian', 1), ('paul', 1), ('world', 1), ('miami', 1)]"
+id4,million,president,False,0, ,[]
+id4,wake,money,False,0, ,[]
+id4,wake,donald,False,0, ,[]
+id4,wake,relief,False,0, ,[]
+id4,wake,hurricane,False,0, ,[]
+id4,wake,bahama,False,0, ,[]
+id4,wake,trump,False,0, ,[]
+id4,wake,dorian,False,0, ,[]
+id4,wake,donate,False,0, ,[]
+id4,wake,fund,False,0, ,[]
+id4,wake,president,False,0, ,[]
+id4,money,donald,False,0, ,[]
+id4,money,relief,False,0, ,[]
+id4,money,hurricane,False,0, ,[]
+id4,money,bahama,False,0, ,[]
+id4,money,trump,False,0, ,[]
+id4,money,dorian,False,0, ,[]
+id4,money,donate,False,0, ,[]
+id4,money,fund,False,0, ,[]
+id4,money,president,False,0, ,[]
+id4,donald,relief,True,14, ,"[('florida', 3), ('sept', 2), ('hurricane', 2), ('dorian', 2), ('carolina', 2), ('national', 2), ('miami', 2), ('ap', 1), ('bahamas', 1), ('million', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1)]"
+id4,donald,hurricane,True,43, ,"[('florida', 10), ('day', 7), ('dorian', 6), ('carolina', 5), ('sept', 4), ('national', 4), ('aug', 4), ('center', 4), ('united', 4), ('university', 4), ('house', 4), ('trump', 4), ('states', 4), ('white', 4), ('miami', 3), ('americans', 2), ('south', 2), ('atlantic', 2), ('gulf', 2), ('andrew', 2), ('later', 2), ('hour', 2), ('alabama', 2), ('georgia', 2), ('coast', 2), ('sharpie', 2), ('noaa', 2), ('mile', 2), ('million', 2), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1), ('news', 1), ('twitter', 1)]"
+id4,donald,bahama,True,17, ,"[('florida', 6), ('hurricane', 4), ('dorian', 4), ('carolina', 4), ('trump', 3), ('day', 3), ('million', 3), ('sept', 2), ('national', 2), ('miami', 2), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('second', 1), ('news', 1), ('twitter', 1)]"
+id4,donald,trump,True,36, ,"[('states', 6), ('united', 6), ('university', 6), ('house', 6), ('aug', 6), ('center', 6), ('florida', 6), ('day', 6), ('white', 6), ('washington', 2), ('ago', 2), ('north', 2), ('carolina', 2), ('office', 2), ('americans', 2), ('sept', 2), ('south', 2), ('dorian', 2), ('atlantic', 2), ('gulf', 2), ('andrew', 2), ('hurricane', 2), ('later', 2), ('hour', 2), ('alabama', 2), ('georgia', 2), ('coast', 2), ('sharpie', 2), ('noaa', 2), ('national', 2), ('mile', 2), ('week', 2), ('miami', 2), ('year', 2), ('department', 2), ('million', 1)]"
+id4,donald,dorian,True,43, ,"[('florida', 10), ('day', 7), ('hurricane', 6), ('carolina', 5), ('sept', 4), ('national', 4), ('aug', 4), ('center', 4), ('united', 4), ('university', 4), ('house', 4), ('trump', 4), ('states', 4), ('white', 4), ('miami', 3), ('americans', 2), ('south', 2), ('atlantic', 2), ('gulf', 2), ('andrew', 2), ('later', 2), ('hour', 2), ('alabama', 2), ('georgia', 2), ('coast', 2), ('sharpie', 2), ('noaa', 2), ('mile', 2), ('million', 2), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1), ('news', 1), ('twitter', 1)]"
+id4,donald,donate,False,0, ,[]
+id4,donald,fund,True,14, ,"[('florida', 3), ('sept', 2), ('hurricane', 2), ('dorian', 2), ('carolina', 2), ('national', 2), ('miami', 2), ('ap', 1), ('bahamas', 1), ('million', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1)]"
+id4,donald,president,False,0, ,[]
+id4,relief,hurricane,True,18, ,"[('dorian', 3), ('florida', 3), ('carolina', 2), ('sept', 2), ('national', 2), ('abaco', 1), ('million', 1), ('company', 1), ('freeport', 1), ('bahama', 1), ('grand', 1), ('international', 1), ('bahamian', 1), ('ap', 1), ('bahamas', 1), ('news', 1), ('miami', 1), ('twitter', 1)]"
+id4,relief,bahama,True,12, ,"[('million', 2), ('dollar', 1), ('abaco', 1), ('company', 1), ('freeport', 1), ('hurricane', 1), ('grand', 1), ('dorian', 1), ('florida', 1), ('carolina', 1), ('international', 1), ('bahamian', 1)]"
+id4,relief,trump,True,16, ,"[('florida', 3), ('million', 2), ('sept', 2), ('hurricane', 2), ('dorian', 2), ('carolina', 2), ('national', 2), ('miami', 2), ('bahama', 1), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1)]"
+id4,relief,dorian,True,18, ,"[('hurricane', 3), ('florida', 3), ('carolina', 2), ('sept', 2), ('national', 2), ('abaco', 1), ('million', 1), ('company', 1), ('freeport', 1), ('bahama', 1), ('grand', 1), ('international', 1), ('bahamian', 1), ('ap', 1), ('bahamas', 1), ('news', 1), ('miami', 1), ('twitter', 1)]"
+id4,relief,donate,False,0, ,[]
+id4,relief,fund,False,0, ,[]
+id4,relief,president,False,0, ,[]
+id4,hurricane,bahama,True,20, ,"[('dorian', 6), ('florida', 6), ('million', 4), ('carolina', 4), ('abaco', 2), ('company', 2), ('freeport', 2), ('grand', 2), ('international', 2), ('bahamian', 2), ('sept', 2), ('national', 2), ('trump', 2), ('day', 2), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('news', 1), ('miami', 1), ('twitter', 1)]"
+id4,hurricane,trump,True,45, ,"[('florida', 10), ('day', 7), ('dorian', 6), ('carolina', 5), ('million', 4), ('sept', 4), ('national', 4), ('states', 4), ('united', 4), ('university', 4), ('house', 4), ('donald', 4), ('aug', 4), ('center', 4), ('white', 4), ('miami', 3), ('bahama', 2), ('americans', 2), ('south', 2), ('atlantic', 2), ('gulf', 2), ('andrew', 2), ('later', 2), ('hour', 2), ('alabama', 2), ('georgia', 2), ('coast', 2), ('sharpie', 2), ('noaa', 2), ('mile', 2), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1)]"
+id4,hurricane,dorian,True,40, ,"[('florida', 12), ('carolina', 6), ('sept', 6), ('national', 6), ('day', 6), ('abaco', 2), ('million', 2), ('company', 2), ('freeport', 2), ('bahama', 2), ('grand', 2), ('international', 2), ('bahamian', 2), ('ap', 2), ('bahamas', 2), ('news', 2), ('miami', 2), ('twitter', 2), ('americans', 2), ('aug', 2), ('south', 2), ('atlantic', 2), ('gulf', 2), ('andrew', 2), ('center', 2), ('later', 2), ('hour', 2), ('alabama', 2), ('united', 2), ('university', 2), ('house', 2), ('trump', 2), ('georgia', 2), ('states', 2), ('coast', 2), ('donald', 2), ('sharpie', 2), ('noaa', 2), ('mile', 2), ('white', 2)]"
+id4,hurricane,donate,False,0, ,[]
+id4,hurricane,fund,True,18, ,"[('dorian', 3), ('florida', 3), ('carolina', 2), ('sept', 2), ('national', 2), ('abaco', 1), ('million', 1), ('company', 1), ('freeport', 1), ('bahama', 1), ('grand', 1), ('international', 1), ('bahamian', 1), ('ap', 1), ('bahamas', 1), ('news', 1), ('miami', 1), ('twitter', 1)]"
+id4,hurricane,president,False,0, ,[]
+id4,bahama,trump,True,17, ,"[('florida', 6), ('million', 5), ('hurricane', 4), ('dorian', 4), ('carolina', 4), ('day', 3), ('sept', 2), ('national', 2), ('miami', 2), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1), ('second', 1)]"
+id4,bahama,dorian,True,20, ,"[('hurricane', 6), ('florida', 6), ('million', 4), ('carolina', 4), ('abaco', 2), ('company', 2), ('freeport', 2), ('grand', 2), ('international', 2), ('bahamian', 2), ('sept', 2), ('national', 2), ('trump', 2), ('day', 2), ('ap', 1), ('bahamas', 1), ('news', 1), ('miami', 1), ('twitter', 1), ('dollar', 1)]"
+id4,bahama,donate,False,0, ,[]
+id4,bahama,fund,True,12, ,"[('million', 2), ('dollar', 1), ('abaco', 1), ('company', 1), ('freeport', 1), ('hurricane', 1), ('grand', 1), ('dorian', 1), ('florida', 1), ('carolina', 1), ('international', 1), ('bahamian', 1)]"
+id4,bahama,president,False,0, ,[]
+id4,trump,dorian,True,45, ,"[('florida', 10), ('day', 7), ('hurricane', 6), ('carolina', 5), ('million', 4), ('sept', 4), ('national', 4), ('aug', 4), ('center', 4), ('united', 4), ('university', 4), ('house', 4), ('states', 4), ('donald', 4), ('white', 4), ('miami', 3), ('bahama', 2), ('americans', 2), ('south', 2), ('atlantic', 2), ('gulf', 2), ('andrew', 2), ('later', 2), ('hour', 2), ('alabama', 2), ('georgia', 2), ('coast', 2), ('sharpie', 2), ('noaa', 2), ('mile', 2), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('second', 1), ('washington', 1), ('ago', 1), ('north', 1), ('office', 1), ('week', 1), ('year', 1), ('department', 1), ('news', 1), ('twitter', 1)]"
+id4,trump,donate,False,0, ,[]
+id4,trump,fund,True,16, ,"[('florida', 3), ('million', 2), ('sept', 2), ('hurricane', 2), ('dorian', 2), ('carolina', 2), ('national', 2), ('miami', 2), ('bahama', 1), ('dollar', 1), ('ap', 1), ('bahamas', 1), ('paul', 1), ('world', 1), ('news', 1), ('twitter', 1)]"
+id4,trump,president,False,0, ,[]
+id4,dorian,donate,False,0, ,[]
+id4,dorian,fund,True,18, ,"[('hurricane', 3), ('florida', 3), ('carolina', 2), ('sept', 2), ('national', 2), ('abaco', 1), ('million', 1), ('company', 1), ('freeport', 1), ('bahama', 1), ('grand', 1), ('international', 1), ('bahamian', 1), ('ap', 1), ('bahamas', 1), ('news', 1), ('miami', 1), ('twitter', 1)]"
+id4,dorian,president,False,0, ,[]
+id4,donate,fund,False,0, ,[]
+id4,donate,president,False,0, ,[]
+id4,fund,president,False,0, ,[]
+id5,december,de,False,0, ,[]
+id5,december,biden,False,0, ,[]
+id5,december,state,False,0, ,[]
+id5,december,joe,False,0, ,[]
+id5,december,sincerely,False,0, ,[]
+id5,december,fauci,False,0, ,[]
+id5,december,anthony,False,0, ,[]
+id5,december,facto,False,0, ,[]
+id5,december,president,False,0, ,[]
+id5,de,biden,False,0, ,[]
+id5,de,state,False,0, ,[]
+id5,de,joe,False,0, ,[]
+id5,de,sincerely,False,0, ,[]
+id5,de,fauci,False,0, ,[]
+id5,de,anthony,False,0, ,[]
+id5,de,facto,False,0, ,[]
+id5,de,president,False,0, ,[]
+id5,biden,state,False,0, ,[]
+id5,biden,joe,True,2, ,"[('fauci', 2), ('anthony', 2)]"
+id5,biden,sincerely,False,0, ,[]
+id5,biden,fauci,True,2, ,"[('joe', 2), ('anthony', 2)]"
+id5,biden,anthony,True,2, ,"[('joe', 2), ('fauci', 2)]"
+id5,biden,facto,False,0, ,[]
+id5,biden,president,False,0, ,[]
+id5,state,joe,False,0, ,[]
+id5,state,sincerely,False,0, ,[]
+id5,state,fauci,False,0, ,[]
+id5,state,anthony,False,0, ,[]
+id5,state,facto,False,0, ,[]
+id5,state,president,False,0, ,[]
+id5,joe,sincerely,False,0, ,[]
+id5,joe,fauci,True,2, ,"[('biden', 2), ('anthony', 2)]"
+id5,joe,anthony,True,2, ,"[('fauci', 2), ('biden', 2)]"
+id5,joe,facto,False,0, ,[]
+id5,joe,president,False,0, ,[]
+id5,sincerely,fauci,False,0, ,[]
+id5,sincerely,anthony,False,0, ,[]
+id5,sincerely,facto,False,0, ,[]
+id5,sincerely,president,False,0, ,[]
+id5,fauci,anthony,True,2, ,"[('joe', 2), ('biden', 2)]"
+id5,fauci,facto,False,0, ,[]
+id5,fauci,president,False,0, ,[]
+id5,anthony,facto,False,0, ,[]
+id5,anthony,president,False,0, ,[]
+id5,facto,president,False,0, ,[]
+id6,epstein,offender,False,0, ,[]
+id6,epstein,jeffrey,True,35, ,"[('percent', 6), ('palm', 6), ('new', 6), ('week', 6), ('year', 6), ('day', 6), ('beach', 6), ('york', 6), ('hong', 2), ('east', 2), ('union', 2), ('germany', 2), ('bob', 2), ('black', 2), ('bloomberg', 2), ('le', 2), ('robert', 2), ('thomas', 2), ('month', 2), ('hour', 2), ('brooklyn', 2), ('house', 2), ('billion', 2), ('american', 2), ('patrick', 2), ('david', 2), ('la', 2), ('ago', 2), ('linda', 2), ('late', 2), ('kong', 2), ('early', 2), ('ghislaine', 2), ('maxwell', 2), ('manhattan', 2)]"
+id6,epstein,photograph,False,0, ,[]
+id6,epstein,convict,False,0, ,[]
+id6,epstein,biden,False,0, ,[]
+id6,epstein,joe,True,33, ,"[('jeffrey', 2), ('percent', 2), ('palm', 2), ('new', 2), ('week', 2), ('year', 2), ('day', 2), ('beach', 2), ('york', 2), ('hong', 1), ('east', 1), ('union', 1), ('germany', 1), ('bob', 1), ('black', 1), ('bloomberg', 1), ('le', 1), ('robert', 1), ('thomas', 1), ('month', 1), ('hour', 1), ('brooklyn', 1), ('house', 1), ('billion', 1), ('american', 1), ('patrick', 1), ('david', 1), ('la', 1), ('ago', 1), ('linda', 1), ('late', 1), ('kong', 1), ('early', 1)]"
+id6,epstein,sex,False,0, ,[]
+id6,epstein,president,False,0, ,[]
+id6,offender,jeffrey,False,0, ,[]
+id6,offender,photograph,False,0, ,[]
+id6,offender,convict,False,0, ,[]
+id6,offender,biden,False,0, ,[]
+id6,offender,joe,False,0, ,[]
+id6,offender,sex,False,0, ,[]
+id6,offender,president,False,0, ,[]
+id6,jeffrey,photograph,False,0, ,[]
+id6,jeffrey,convict,False,0, ,[]
+id6,jeffrey,biden,False,0, ,[]
+id6,jeffrey,joe,True,33, ,"[('epstein', 2), ('percent', 2), ('palm', 2), ('new', 2), ('week', 2), ('year', 2), ('day', 2), ('beach', 2), ('york', 2), ('hong', 1), ('east', 1), ('union', 1), ('germany', 1), ('bob', 1), ('black', 1), ('bloomberg', 1), ('le', 1), ('robert', 1), ('thomas', 1), ('month', 1), ('hour', 1), ('brooklyn', 1), ('house', 1), ('billion', 1), ('american', 1), ('patrick', 1), ('david', 1), ('la', 1), ('ago', 1), ('linda', 1), ('late', 1), ('kong', 1), ('early', 1)]"
+id6,jeffrey,sex,False,0, ,[]
+id6,jeffrey,president,False,0, ,[]
+id6,photograph,convict,False,0, ,[]
+id6,photograph,biden,False,0, ,[]
+id6,photograph,joe,False,0, ,[]
+id6,photograph,sex,False,0, ,[]
+id6,photograph,president,False,0, ,[]
+id6,convict,biden,False,0, ,[]
+id6,convict,joe,False,0, ,[]
+id6,convict,sex,False,0, ,[]
+id6,convict,president,False,0, ,[]
+id6,biden,joe,False,0, ,[]
+id6,biden,sex,False,0, ,[]
+id6,biden,president,False,0, ,[]
+id6,joe,sex,False,0, ,[]
+id6,joe,president,False,0, ,[]
+id6,sex,president,False,0, ,[]

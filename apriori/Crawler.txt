@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+import scrapy
+from scrapy.spiders import CrawlSpider
+
+class FollowlinksSpider(CrawlSpider):
+
+    #name of the spider is followlinks.When the code is to be run use: scrapy crawl followlinks (on cmd)
+    name = "followlinks"
+
+    #domain/site to be crawled
+    allowed_domains = ["snopes.com"]
+   
+    #Since there were 12 pages under the "fake news" category
+    def start_requests(self):
+        urk='http://www.snopes.com/tag/fake-news/page/'
+        urls=[]
+
+	#by appending it to the main url of home page(stored in string variable 'urk')[creating a list of all the urls of every new page]
+	#will need to be changed if number of pages increase(in this case it was 12)
+        for i in range(1,12):
+            urls.append(urk+str(i))
+	
+	#now we will parse each url one by one using parse function
+        for url in urls:
+            print url
+            yield scrapy.Request(url=url,callback=self.parse)
+    
+    def parse(self, response):
+        #print response.url
+
+	#all the headlines were present in the "body-content" division of a page
+        news=response.css("div.body-content")
+
+	#to fetch all the links present(all data with 'href' tag)
+        link=news.xpath(".//a/@href").extract()
+        #print(link)
+        for i in link:
+            #print (response.urljoin(i))
+            yield response.follow(response.urljoin(i),self.parse_about)
+
+    def parse_about(self, response):
+        def extract_with_css(query):
+            return response.css(query).extract_first()
+        
+	#this function will fetch the content ,date and title of the headline
+        res={
+                 
+              'headline':extract_with_css('.article-title::text'),
+              'date': extract_with_css('.date-wrapper::text'),
+              'Rating': response.xpath('//div[@class="claim false"]/span//text()').extract_first()
+        }
+        print (res)
