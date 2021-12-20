@@ -57,16 +57,40 @@ def snopes_picker(url):
         title = driver.title + "\n" + driver.find_element_by_class_name("subtitle").text
         source = "Snopes.com"
 
-    date = driver.find_element_by_tag_name("time").get_attribute("datetime")
-    claim = driver.find_element_by_class_name("claim-text").text
-    legitimacy = driver.find_element_by_class_name("h3").text
-    body = driver.find_element_by_class_name("single-body").text
-    try: # For the cases which do not contain sources
-        body = body.split("Sources:")
-        body = body[1]
-        body = body.split("\n")
+    try:
+        date = driver.find_element_by_tag_name("time").get_attribute("datetime")
     except:
+        date = "none"
+
+    try:
+        claim = driver.find_element_by_class_name("claim-text").text
+    except:
+        claim = "none"
+
+    try:
+        legitimacy = driver.find_element_by_class_name("h3").text
+    except:
+        legitimacy = "none"
+
+    foo = driver.find_elements_by_css_selector("div.list-group-item.small")
+    if foo:
         body = []
+        for i in foo:
+            body.append(i.text)
+    else:
+        try: # For the cases which do not contain sources
+            body = driver.find_element_by_class_name("single-body").text
+            body = body.split("Sources:")
+            body = body[1]
+            body = body.split("\n")
+        except:
+            try:
+                body = driver.find_element_by_class_name("single-body").text
+                body = body.split("Sources")
+                body = body[1]
+                body = body.split("\n")
+            except:
+                body = []
     sources = [x for x in body if x]
     sources_num = len(sources)
 
@@ -75,13 +99,21 @@ def snopes_picker(url):
 ### Start to Collect Data
 
 options = webdriver.ChromeOptions()
-# options.add_argument('--headless')
-# options.add_argument('--no-sandbox')
-# options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--headless') # A Headless browser runs in the background. You will not see the browser GUI or the operations been operated on it.
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument("--disable-popup-blocking")
+options.add_argument("--disable-notifications")
+
 driver = webdriver.Chrome('chromedriver',options=options)
 
-start_link = 'https://www.snopes.com/fact-check/category/politics/'
-urls = get_urls(start_link,2) # start_link and number of pages you want to collect.
+## Collect new urls from start_link page.
+# start_link = 'https://www.snopes.com/fact-check/category/politics/'
+# urls = get_urls(start_link,100) # start_link and number of pages you want to collect.
+
+## Read urls from csv file.
+with open("./AI-in-the-wild/apriori/1218_100urls.csv","r") as ff:
+    urls = [line.rstrip("\n") for line in ff]
 
 # Collect Data from each fact-check webpage and write in CSV.
 header = ['id','sources_num','category','type','legitimacy','source_name','url','title','date','text','sources']
@@ -98,8 +130,35 @@ with open(collect_csv,'w') as f:
         i += 1
 
 driver.close()
+'''
+# I do not know why, but it only save 1182 urls....
+txtfile = open("./AI-in-the-wild/apriori/1218_100urls.csv","w")
+for ele in urls:
+    txtfile.write(ele + "\n")
+'''
+
+## Save urls into csv file.
+import csv
+with open("./AI-in-the-wild/apriori/1218_100urls.csv","w") as f:
+    write = csv.writer(f)
+    for ele in urls:
+        write.writerow([ele]) # need to make a list. Otherwise, each character will be save into each column.
+
+## Read urls from csv file.
+with open("./AI-in-the-wild/apriori/1218_100urls.csv","r") as ff:
+    urls2 = [line.rstrip("\n") for line in ff]
+
+######
+
+
+
 # TODO
 # Solved: 1. Go to the large dataset: next page
 # 2. Sources parsing and add as data
 # 3. Collect text for each source
 # Solved: does not have sources case: https://www.snopes.com/fact-check/chanel-poop-building/
+
+
+
+
+
