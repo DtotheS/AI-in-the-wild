@@ -7,24 +7,46 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from collections import Counter
 from datetime import datetime as dt
 import csv
+import matplotlib.pyplot as plt
+import numpy as np
 
-os.getcwd()
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/aidata.csv")
-# df.columns
+# os.getcwd()
+ogdf = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/aidata_1203fc.csv")
+fcs = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/sn_1203fc.csv")
+fcs.columns
+
 # df.head
 # len(df['text'])
 # type(df['text'])
 
+fcs[['legitimacy','id']].groupby('legitimacy').count()
+fcs[['sources_num','id']].groupby('sources_num').count() # Among 1003, 200 contains sources.
+# df[['legitimacy','id']].groupby('legitimacy').count() #Total 1243
+len(df[df['title']=="none"]['id']) # Used "" to collect title. Among 1243 only 87 were not collected. But, among collected, there may be dummy titles.
+len(df[df['url']=="none"]['id']) #Among 1243, 703 does not contains url. That is because they did not contain urls before 12/21/2019
+
+
+
+## Select ids which only have sources.
+fc = ogdf[ogdf['sourceid']==0]
+fc['sources_num'] = fc['sources_num'].astype(int)
+fc_src = fc[fc['sources_num']>0]['id'] # C1: contains only ids with sources
+id_src = fc_src.to_list() # Among 1200, only 200 contains sources
+df_src = ogdf['id'].isin(id_src)
+df = ogdf[df_src]
+df = df[df['date'] != "none"] # C2: contains only sources with date info. 1285 - 1243 = 42 are removed.
+df = df.reset_index(drop=True)
+
 # Use title and text(claim or content)
 df['total'] = np.nan
+df['sourceid'].astype(int)
 
-# for the claim, since it is already summarized, I only use claim.
-# for the sources, I used both title and contents.
-for i in range(len(df['total'])):
-    if df['sourceid'][i] == 1:
-        df['total'][i] = df['text'][i]
+for i in range(len(df)):
+    if df['sourceid'][i] == 0:
+        df['total'][i] = df['text'][i] # Claim for fact check page
     else:
-        df['total'][i] = df['title'][i] #+ " " + df['text'][i]
+        df['total'][i] = df['title'][i] # Only use title for ai patterns
+
 
 ## text cleaning. (did after keywrod extraction)
 
@@ -45,10 +67,8 @@ def normalize(comment, lowercase, remove_stopwords):
 
 df['spacy_key'] = np.nan
 for i in range(len(df['total'])):
-    if df['sourceid'][i] == 1:
-        df['spacy_key'][i] = str(nlp(df['total'][i]))
-    else:
-        df['spacy_key'][i] = str(nlp(df['total'][i])) #.ents) # deleted Named Entity Recognition (key word extraction)
+    df['spacy_key'][i] = str(nlp(df['total'][i]))
+
 
 # better to clean after key extraction
 # for the clain, key exraction make too small set, so it is better not to do.
@@ -152,13 +172,13 @@ def ai_pattern(id,key1,key2):
     k1 = key1
     k2 = key2
     #############################################################################
-    for j in range(2,len(df[df['id']==i])+1): # not include fake news, but from the first source (sourceid ==2).
-        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==1)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==1).
+        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
             foo1 = df[(df['id']==i)&(df['sourceid']==j)]['spacy_clean'].index[0] #index for id=i & sourceid=j
             if k1 in df[(df['id']==i)&(df['sourceid']==j)]['spacy_clean'][foo1]:
                 k1_idx.append(foo1)
-    for j in range(2,len(df[df['id']==i])+1): # not include fake news, but from the first source (sourceid ==2).
-        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 1)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==2).
+        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
             foo2 = df[(df['id'] == i) & (df['sourceid'] == j)]['spacy_clean'].index[0]  # index for id=i & sourceid=j
             if k2 in df[(df['id']==i)&(df['sourceid']==j)]['spacy_clean'][foo2]:
                 k2_idx.append(foo2)
@@ -227,7 +247,7 @@ all_patterns = {}
 id_max = max(df['id'])
 for id_num in range(1,id_max+1):
     all_patterns['id%s' %id_num] = []
-    words = df[(df['id']==id_num)&(df['sourceid']==1)]['spacy_clean'].reset_index(drop=True)[0]
+    words = df[(df['id']==id_num)&(df['sourceid']==0)]['spacy_clean'].reset_index(drop=True)[0]
     words_len = len(words)
     for i in range(words_len-1):
         for j in range(i+1,words_len):
@@ -237,7 +257,7 @@ print(all_patterns['id1'])
 # df[(df['id']==3)&(df['sourceid']==1)]['spacy_clean'].reset_index(drop=True)[0]
 
 # Make a CSV file and List of AB & BC patterns.
-output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/ai_patterns_title.csv"
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/ai_patterns1203.csv"
 
 all_patterns.items()
 
@@ -249,5 +269,5 @@ with open(output_csv,'w') as f:
     for key, value in all_patterns.items():
         for case in value:
             li = []
-            li.extend([key,case[0],case[1],bool(case[2]),len(case[2]),case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
+            li.extend([key,case[0],case[1],bool(case[2]),len(case[2])," ",case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
             c.writerow(li)

@@ -93,8 +93,9 @@ def snopes_picker(url):
                 body = []
     sources = [x for x in body if x]
     sources_num = len(sources)
+    sourceid = 0
 
-    return sources_num,"politics","fact_check",legitimacy,source,url,title,date,claim,sources
+    return sourceid,sources_num,"politics","fact_check",legitimacy,source,url,title,date,claim,sources
 
 ### Start to Collect Data
 
@@ -112,13 +113,13 @@ driver = webdriver.Chrome('chromedriver',options=options)
 # urls = get_urls(start_link,100) # start_link and number of pages you want to collect.
 
 ## Read urls from csv file.
-with open("./AI-in-the-wild/apriori/1218_100urls.csv","r") as ff:
+with open("./AI-in-the-wild/apriori/1218_100pgs.csv","r") as ff: #100 urls + 3 cases of our stimuli (another 1 is from politifacts)
     urls = [line.rstrip("\n") for line in ff]
 
 # Collect Data from each fact-check webpage and write in CSV.
-header = ['id','sources_num','category','type','legitimacy','source_name','url','title','date','text','sources']
-collect_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/snopes_data.csv"
-with open(collect_csv,'w') as f:
+header = ['id','sourceid','sources_num','category','type','legitimacy','source_name','url','title','date','text','sources']
+collect_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/sn_1203fc.csv"
+with open(collect_csv,'w',encoding="utf-8") as f:
     c = csv.writer(f) # write csv on f.
     c.writerow(header) # header
     i = 1
@@ -129,25 +130,26 @@ with open(collect_csv,'w') as f:
         c.writerow(foo)
         i += 1
 
+
 driver.close()
 '''
 # I do not know why, but it only save 1182 urls....
-txtfile = open("./AI-in-the-wild/apriori/1218_100urls.csv","w")
+txtfile = open("./AI-in-the-wild/apriori/1218_100pgs.csv","w")
 for ele in urls:
     txtfile.write(ele + "\n")
 '''
-
+'''
 ## Save urls into csv file.
 import csv
-with open("./AI-in-the-wild/apriori/1218_100urls.csv","w") as f:
+with open("./AI-in-the-wild/apriori/1218_100pgs.csv","w") as f:
     write = csv.writer(f)
     for ele in urls:
         write.writerow([ele]) # need to make a list. Otherwise, each character will be save into each column.
 
 ## Read urls from csv file.
-with open("./AI-in-the-wild/apriori/1218_100urls.csv","r") as ff:
-    urls2 = [line.rstrip("\n") for line in ff]
-
+with open("./AI-in-the-wild/apriori/1218_103urls.csv","r") as ff:
+    urls = [line.rstrip("\n") for line in ff]
+'''
 ######
 
 

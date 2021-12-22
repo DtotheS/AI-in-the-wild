@@ -1,0 +1,308 @@
+id,keyword A,keyword C,exist_B,num_B,keywords B
+id1,drug,mcconnell,False,0,[]
+id1,drug,politician,False,0,[]
+id1,drug,find,False,0,[]
+id1,drug,cocaine,False,0,[]
+id1,drug,ship,False,0,[]
+id1,drug,pound,False,0,[]
+id1,drug,senate,False,0,[]
+id1,drug,anti,False,0,[]
+id1,drug,mitch,False,0,[]
+id1,drug,leader,False,0,[]
+id1,drug,cargo,False,0,[]
+id1,drug,majority,False,0,[]
+id1,mcconnell,politician,False,0,[]
+id1,mcconnell,find,False,0,[]
+id1,mcconnell,cocaine,True,3,"[('mitch', 5), ('don', 1), ('blankenship', 1)]"
+id1,mcconnell,ship,False,0,[]
+id1,mcconnell,pound,False,0,[]
+id1,mcconnell,senate,False,0,[]
+id1,mcconnell,anti,False,0,[]
+id1,mcconnell,mitch,True,3,"[('cocaine', 2), ('don', 1), ('blankenship', 1)]"
+id1,mcconnell,leader,False,0,[]
+id1,mcconnell,cargo,False,0,[]
+id1,mcconnell,majority,False,0,[]
+id1,politician,find,False,0,[]
+id1,politician,cocaine,False,0,[]
+id1,politician,ship,False,0,[]
+id1,politician,pound,False,0,[]
+id1,politician,senate,False,0,[]
+id1,politician,anti,False,0,[]
+id1,politician,mitch,False,0,[]
+id1,politician,leader,False,0,[]
+id1,politician,cargo,False,0,[]
+id1,politician,majority,False,0,[]
+id1,find,cocaine,False,0,[]
+id1,find,ship,False,0,[]
+id1,find,pound,False,0,[]
+id1,find,senate,False,0,[]
+id1,find,anti,False,0,[]
+id1,find,mitch,False,0,[]
+id1,find,leader,False,0,[]
+id1,find,cargo,False,0,[]
+id1,find,majority,False,0,[]
+id1,cocaine,ship,False,0,[]
+id1,cocaine,pound,False,0,[]
+id1,cocaine,senate,False,0,[]
+id1,cocaine,anti,False,0,[]
+id1,cocaine,mitch,True,3,"[('don', 2), ('blankenship', 2), ('mcconnell', 1)]"
+id1,cocaine,leader,False,0,[]
+id1,cocaine,cargo,False,0,[]
+id1,cocaine,majority,False,0,[]
+id1,ship,pound,False,0,[]
+id1,ship,senate,False,0,[]
+id1,ship,anti,False,0,[]
+id1,ship,mitch,False,0,[]
+id1,ship,leader,False,0,[]
+id1,ship,cargo,False,0,[]
+id1,ship,majority,False,0,[]
+id1,pound,senate,False,0,[]
+id1,pound,anti,False,0,[]
+id1,pound,mitch,False,0,[]
+id1,pound,leader,False,0,[]
+id1,pound,cargo,False,0,[]
+id1,pound,majority,False,0,[]
+id1,senate,anti,False,0,[]
+id1,senate,mitch,False,0,[]
+id1,senate,leader,False,0,[]
+id1,senate,cargo,False,0,[]
+id1,senate,majority,False,0,[]
+id1,anti,mitch,False,0,[]
+id1,anti,leader,False,0,[]
+id1,anti,cargo,False,0,[]
+id1,anti,majority,False,0,[]
+id1,mitch,leader,False,0,[]
+id1,mitch,cargo,False,0,[]
+id1,mitch,majority,False,0,[]
+id1,leader,cargo,False,0,[]
+id1,leader,majority,False,0,[]
+id1,cargo,majority,False,0,[]
+id2,october,school,False,0,[]
+id2,october,lunch,False,0,[]
+id2,october,president,False,0,[]
+id2,october,program,False,0,[]
+id2,october,michelle,False,0,[]
+id2,october,cancel,False,0,[]
+id2,october,trump,False,0,[]
+id2,october,obama,False,0,[]
+id2,school,lunch,False,0,[]
+id2,school,president,False,0,[]
+id2,school,program,False,0,[]
+id2,school,michelle,True,3,"[('administration', 1), ('trump', 1), ('obama', 1)]"
+id2,school,cancel,False,0,[]
+id2,school,trump,True,2,"[('administration', 2), ('obama', 2)]"
+id2,school,obama,True,2,"[('administration', 2), ('trump', 2)]"
+id2,lunch,president,False,0,[]
+id2,lunch,program,False,0,[]
+id2,lunch,michelle,False,0,[]
+id2,lunch,cancel,False,0,[]
+id2,lunch,trump,False,0,[]
+id2,lunch,obama,False,0,[]
+id2,president,program,False,0,[]
+id2,president,michelle,False,0,[]
+id2,president,cancel,False,0,[]
+id2,president,trump,False,0,[]
+id2,president,obama,False,0,[]
+id2,program,michelle,False,0,[]
+id2,program,cancel,False,0,[]
+id2,program,trump,False,0,[]
+id2,program,obama,False,0,[]
+id2,michelle,cancel,False,0,[]
+id2,michelle,trump,True,3,"[('administration', 1), ('school', 1), ('obama', 1)]"
+id2,michelle,obama,True,3,"[('administration', 1), ('trump', 1), ('school', 1)]"
+id2,cancel,trump,False,0,[]
+id2,cancel,obama,False,0,[]
+id2,trump,obama,True,2,"[('administration', 2), ('school', 2)]"
+id3,catch,march,False,0,[]
+id3,catch,college,False,0,[]
+id3,catch,obama,False,0,[]
+id3,catch,scandal,False,0,[]
+id3,catch,family,False,0,[]
+id3,catch,admission,False,0,[]
+id3,march,college,False,0,[]
+id3,march,obama,False,0,[]
+id3,march,scandal,False,0,[]
+id3,march,family,False,0,[]
+id3,march,admission,False,0,[]
+id3,college,obama,True,2,"[('bust', 1), ('scandal', 1)]"
+id3,college,scandal,True,4,"[('admission', 2), ('bust', 2), ('tennis', 2), ('coach', 2)]"
+id3,college,family,True,2,"[('bust', 1), ('scandal', 1)]"
+id3,college,admission,True,4,"[('scandal', 5), ('tennis', 2), ('coach', 2), ('bust', 1)]"
+id3,obama,scandal,True,4,"[('tennis', 2), ('coach', 2), ('bust', 1), ('college', 1)]"
+id3,obama,family,False,0,[]
+id3,obama,admission,True,5,"[('scandal', 3), ('tennis', 2), ('coach', 2), ('bust', 1), ('college', 1)]"
+id3,scandal,family,True,4,"[('tennis', 2), ('coach', 2), ('bust', 1), ('college', 1)]"
+id3,scandal,admission,True,4,"[('tennis', 4), ('coach', 4), ('bust', 1), ('college', 1)]"
+id3,family,admission,True,5,"[('scandal', 3), ('tennis', 2), ('coach', 2), ('bust', 1), ('college', 1)]"
+id4,fund,bahama,True,1,"[('relief', 1)]"
+id4,fund,politician,False,0,[]
+id4,fund,trump,False,0,[]
+id4,fund,money,False,0,[]
+id4,fund,president,False,0,[]
+id4,fund,donate,True,1,"[('relief', 1)]"
+id4,fund,contribute,False,0,[]
+id4,fund,hurricane,True,1,"[('trump', 1)]"
+id4,fund,million,False,0,[]
+id4,fund,relief,False,0,[]
+id4,fund,donald,True,1,"[('trump', 1)]"
+id4,fund,wake,False,0,[]
+id4,fund,dorian,True,2,"[('trump', 2), ('relief', 1)]"
+id4,bahama,politician,True,1,"[('relief', 1)]"
+id4,bahama,trump,True,3,"[('dorian', 4), ('hurricane', 1), ('relief', 1)]"
+id4,bahama,money,False,0,[]
+id4,bahama,president,True,1,"[('relief', 1)]"
+id4,bahama,donate,True,1,"[('dorian', 1)]"
+id4,bahama,contribute,True,1,"[('relief', 1)]"
+id4,bahama,hurricane,True,1,"[('dorian', 3)]"
+id4,bahama,million,True,1,"[('relief', 1)]"
+id4,bahama,relief,True,1,"[('dorian', 1)]"
+id4,bahama,donald,False,0,[]
+id4,bahama,wake,False,0,[]
+id4,bahama,dorian,True,1,"[('hurricane', 1)]"
+id4,politician,trump,False,0,[]
+id4,politician,money,False,0,[]
+id4,politician,president,False,0,[]
+id4,politician,donate,True,1,"[('relief', 1)]"
+id4,politician,contribute,False,0,[]
+id4,politician,hurricane,True,1,"[('trump', 1)]"
+id4,politician,million,False,0,[]
+id4,politician,relief,False,0,[]
+id4,politician,donald,True,1,"[('trump', 1)]"
+id4,politician,wake,False,0,[]
+id4,politician,dorian,True,2,"[('trump', 2), ('relief', 1)]"
+id4,trump,money,False,0,[]
+id4,trump,president,False,0,[]
+id4,trump,donate,True,2,"[('dorian', 2), ('relief', 1)]"
+id4,trump,contribute,False,0,[]
+id4,trump,hurricane,True,1,"[('dorian', 3)]"
+id4,trump,million,False,0,[]
+id4,trump,relief,True,1,"[('dorian', 2)]"
+id4,trump,donald,False,0,[]
+id4,trump,wake,False,0,[]
+id4,trump,dorian,True,2,"[('relief', 1), ('hurricane', 1)]"
+id4,money,president,False,0,[]
+id4,money,donate,False,0,[]
+id4,money,contribute,False,0,[]
+id4,money,hurricane,False,0,[]
+id4,money,million,False,0,[]
+id4,money,relief,False,0,[]
+id4,money,donald,False,0,[]
+id4,money,wake,False,0,[]
+id4,money,dorian,False,0,[]
+id4,president,donate,True,1,"[('relief', 1)]"
+id4,president,contribute,False,0,[]
+id4,president,hurricane,True,1,"[('trump', 1)]"
+id4,president,million,False,0,[]
+id4,president,relief,False,0,[]
+id4,president,donald,True,1,"[('trump', 1)]"
+id4,president,wake,False,0,[]
+id4,president,dorian,True,2,"[('trump', 2), ('relief', 1)]"
+id4,donate,contribute,True,1,"[('relief', 1)]"
+id4,donate,hurricane,True,2,"[('dorian', 2), ('bahama', 1)]"
+id4,donate,million,True,1,"[('relief', 1)]"
+id4,donate,relief,False,0,[]
+id4,donate,donald,False,0,[]
+id4,donate,wake,False,0,[]
+id4,donate,dorian,True,1,"[('bahama', 1)]"
+id4,contribute,hurricane,True,1,"[('trump', 1)]"
+id4,contribute,million,False,0,[]
+id4,contribute,relief,False,0,[]
+id4,contribute,donald,True,1,"[('trump', 1)]"
+id4,contribute,wake,False,0,[]
+id4,contribute,dorian,True,2,"[('trump', 2), ('relief', 1)]"
+id4,hurricane,million,True,1,"[('trump', 1)]"
+id4,hurricane,relief,True,3,"[('dorian', 2), ('bahama', 1), ('trump', 1)]"
+id4,hurricane,donald,True,1,"[('trump', 1)]"
+id4,hurricane,wake,False,0,[]
+id4,hurricane,dorian,True,2,"[('bahama', 1), ('trump', 1)]"
+id4,million,relief,False,0,[]
+id4,million,donald,True,1,"[('trump', 1)]"
+id4,million,wake,False,0,[]
+id4,million,dorian,True,2,"[('trump', 2), ('relief', 1)]"
+id4,relief,donald,True,1,"[('trump', 1)]"
+id4,relief,wake,False,0,[]
+id4,relief,dorian,True,2,"[('trump', 2), ('bahama', 1)]"
+id4,donald,wake,False,0,[]
+id4,donald,dorian,True,1,"[('trump', 2)]"
+id4,wake,dorian,False,0,[]
+id5,sincerely,anthony,False,0,[]
+id5,sincerely,fauci,True,4,"[('biden', 2), ('president', 2), ('I', 2), ('mean', 2)]"
+id5,sincerely,biden,True,4,"[('fauci', 2), ('president', 2), ('I', 2), ('mean', 2)]"
+id5,sincerely,president,True,4,"[('fauci', 2), ('biden', 2), ('I', 2), ('mean', 2)]"
+id5,sincerely,december,False,0,[]
+id5,sincerely,state,False,0,[]
+id5,sincerely,joe,True,5,"[('fauci', 1), ('biden', 1), ('president', 1), ('I', 1), ('mean', 1)]"
+id5,sincerely,de,False,0,[]
+id5,sincerely,facto,False,0,[]
+id5,anthony,fauci,False,0,[]
+id5,anthony,biden,False,0,[]
+id5,anthony,president,False,0,[]
+id5,anthony,december,False,0,[]
+id5,anthony,state,False,0,[]
+id5,anthony,joe,False,0,[]
+id5,anthony,de,False,0,[]
+id5,anthony,facto,False,0,[]
+id5,fauci,biden,True,4,"[('sincerely', 2), ('president', 2), ('I', 2), ('mean', 2)]"
+id5,fauci,president,True,4,"[('sincerely', 2), ('biden', 2), ('I', 2), ('mean', 2)]"
+id5,fauci,december,False,0,[]
+id5,fauci,state,False,0,[]
+id5,fauci,joe,True,5,"[('sincerely', 1), ('biden', 1), ('president', 1), ('I', 1), ('mean', 1)]"
+id5,fauci,de,False,0,[]
+id5,fauci,facto,False,0,[]
+id5,biden,president,True,4,"[('sincerely', 2), ('fauci', 2), ('I', 2), ('mean', 2)]"
+id5,biden,december,False,0,[]
+id5,biden,state,False,0,[]
+id5,biden,joe,True,5,"[('sincerely', 1), ('fauci', 1), ('president', 1), ('I', 1), ('mean', 1)]"
+id5,biden,de,False,0,[]
+id5,biden,facto,False,0,[]
+id5,president,december,False,0,[]
+id5,president,state,False,0,[]
+id5,president,joe,True,5,"[('sincerely', 1), ('fauci', 1), ('biden', 1), ('I', 1), ('mean', 1)]"
+id5,president,de,False,0,[]
+id5,president,facto,False,0,[]
+id5,december,state,False,0,[]
+id5,december,joe,False,0,[]
+id5,december,de,False,0,[]
+id5,december,facto,False,0,[]
+id5,state,joe,False,0,[]
+id5,state,de,False,0,[]
+id5,state,facto,False,0,[]
+id5,joe,de,False,0,[]
+id5,joe,facto,False,0,[]
+id5,de,facto,False,0,[]
+id6,offender,jeffrey,False,0,[]
+id6,offender,photograph,False,0,[]
+id6,offender,biden,False,0,[]
+id6,offender,president,False,0,[]
+id6,offender,epstein,False,0,[]
+id6,offender,joe,False,0,[]
+id6,offender,convict,False,0,[]
+id6,offender,sex,False,0,[]
+id6,jeffrey,photograph,False,0,[]
+id6,jeffrey,biden,False,0,[]
+id6,jeffrey,president,False,0,[]
+id6,jeffrey,epstein,False,0,[]
+id6,jeffrey,joe,False,0,[]
+id6,jeffrey,convict,False,0,[]
+id6,jeffrey,sex,False,0,[]
+id6,photograph,biden,False,0,[]
+id6,photograph,president,False,0,[]
+id6,photograph,epstein,False,0,[]
+id6,photograph,joe,False,0,[]
+id6,photograph,convict,False,0,[]
+id6,photograph,sex,False,0,[]
+id6,biden,president,False,0,[]
+id6,biden,epstein,False,0,[]
+id6,biden,joe,False,0,[]
+id6,biden,convict,False,0,[]
+id6,biden,sex,False,0,[]
+id6,president,epstein,False,0,[]
+id6,president,joe,False,0,[]
+id6,president,convict,False,0,[]
+id6,president,sex,False,0,[]
+id6,epstein,joe,False,0,[]
+id6,epstein,convict,False,0,[]
+id6,epstein,sex,False,0,[]
+id6,joe,convict,False,0,[]
+id6,joe,sex,False,0,[]
+id6,convict,sex,False,0,[]
