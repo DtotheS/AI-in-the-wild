@@ -1,7 +1,6 @@
 ## Set up
 # !brew install chromedriver
 # !conda install selenium
-# !conda install beautifulsoup4
 
 ## Modules
 from selenium import webdriver
@@ -72,30 +71,35 @@ def snopes_picker(url):
     except:
         legitimacy = "none"
 
+    # Bodyt = body text & claim part
     foo = driver.find_elements_by_css_selector("div.list-group-item.small")
     if foo:
-        body = []
+        srcs = []
         for i in foo:
-            body.append(i.text)
+            srcs.append(i.text)
+        bodyt = driver.find_element_by_class_name("single-body").text
     else:
         try: # For the cases which do not contain sources
             body = driver.find_element_by_class_name("single-body").text
             body = body.split("Sources:")
-            body = body[1]
-            body = body.split("\n")
+            bodyt = body[0]
+            srcs = body[1]
+            srcs = srcs.split("\n")
         except:
             try:
                 body = driver.find_element_by_class_name("single-body").text
                 body = body.split("Sources")
-                body = body[1]
-                body = body.split("\n")
+                bodyt = body[0]
+                srcs = body[1]
+                srcs = srcs.split("\n")
             except:
-                body = []
-    sources = [x for x in body if x]
+                srcs = []
+                bodyt = driver.find_element_by_class_name("single-body").text
+    sources = [x for x in srcs if x]
     sources_num = len(sources)
     sourceid = 0
 
-    return sourceid,sources_num,"politics","fact_check",legitimacy,source,url,title,date,claim,sources
+    return sourceid,sources_num,"politics","fact_check",legitimacy,source,url,title,date,bodyt,claim,sources
 
 ### Start to Collect Data
 
@@ -108,17 +112,32 @@ options.add_argument("--disable-notifications")
 
 driver = webdriver.Chrome('chromedriver',options=options)
 
-## Collect new urls from start_link page.
-# start_link = 'https://www.snopes.com/fact-check/category/politics/'
-# urls = get_urls(start_link,100) # start_link and number of pages you want to collect.
+'''
+# Collect new urls from start_link page.
+start_link = 'https://www.snopes.com/fact-check/category/politics/'
+urls = get_urls(start_link,100) # start_link and number of pages you want to collect.
+
+# Save urls into csv file.
+import csv
+header_url = ['id','url']
+i = 0
+with open("./AI-in-the-wild/apriori/1218_100pgs.csv","w") as f:
+    write = csv.writer(f)
+    write.writerow(header_url)
+    for ele in urls:
+        i += 1
+        foo2 = [i,ele]
+        write.writerow(foo2) # need to make a list. Otherwise, each character will be save into each column.
+'''
 
 ## Read urls from csv file.
-with open("./AI-in-the-wild/apriori/1218_100pgs.csv","r") as ff: #100 urls + 3 cases of our stimuli (another 1 is from politifacts)
-    urls = [line.rstrip("\n") for line in ff]
+# import pandas as pd
+# df = pd.read_csv("./AI-in-the-wild/apriori/1218_100pgs.csv") #100 urls + 3 cases of our stimuli (another 1 is from politifacts)
+# urls = df['url'].values.tolist()
 
 # Collect Data from each fact-check webpage and write in CSV.
-header = ['id','sourceid','sources_num','category','type','legitimacy','source_name','url','title','date','text','sources']
-collect_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/sn_1203fc.csv"
+header = ['id','sourceid','sources_num','category','type','legitimacy','source_name','url','title','date','body','claim','sources']
+collect_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/factcheck_websites.csv"
 with open(collect_csv,'w',encoding="utf-8") as f:
     c = csv.writer(f) # write csv on f.
     c.writerow(header) # header
@@ -138,26 +157,33 @@ txtfile = open("./AI-in-the-wild/apriori/1218_100pgs.csv","w")
 for ele in urls:
     txtfile.write(ele + "\n")
 '''
+
 '''
 ## Save urls into csv file.
 import csv
+header_url = ['id','url']
+i = 0
 with open("./AI-in-the-wild/apriori/1218_100pgs.csv","w") as f:
     write = csv.writer(f)
+    write.writerow(header_url)
     for ele in urls:
-        write.writerow([ele]) # need to make a list. Otherwise, each character will be save into each column.
+        i += 1
+        foo2 = [i,ele]
+        write.writerow(foo2) # need to make a list. Otherwise, each character will be save into each column.
 
-## Read urls from csv file.
-with open("./AI-in-the-wild/apriori/1218_103urls.csv","r") as ff:
-    urls = [line.rstrip("\n") for line in ff]
+## Read urls from csv file
+import pandas as pd
+df = pd.read_csv("./AI-in-the-wild/apriori/1218_100pgs.csv")
+urls = df['url'].values.tolist()
+
+# with open("./AI-in-the-wild/apriori/1218_100pgs_noid.csv","r") as ff: 
+#     urls = [line.rstrip("\n") for line in ff]
 '''
-######
-
-
 
 # TODO
 # Solved: 1. Go to the large dataset: next page
-# 2. Sources parsing and add as data
-# 3. Collect text for each source
+# Solved: 2. Sources parsing and add as data
+# half: 3. Collect text for each source
 # Solved: does not have sources case: https://www.snopes.com/fact-check/chanel-poop-building/
 
 
