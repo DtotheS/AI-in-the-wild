@@ -79,7 +79,7 @@ real = fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy
 fake, real
 
 ### Load df which include delta_dt (time gap days), ai_pattern (all ai), ai_pattern_ent (NE ai)
-df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df.pkl')
+df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
 
 ## EDA
 # Among all ai: 58.6%
@@ -111,6 +111,8 @@ for i in range(len(df)):
     df['src_ai_pattern'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['ai_pattern'].reset_index(drop=True)[0]
 
 ### EDA for Time Gap (days)
+'''
+### df2 pikle already done.
 len(df[df['delta_dt'].isna()]) # Total 31 nan = no dates
 # Remove sources longer than today. ### Need to fix this later....
 today = datetime.now()
@@ -122,6 +124,7 @@ for i in range(len(df)):
 len(df[df['delta_dt'].isna()]) # became 38: There are 7 cases which shows wrong date for source. We removed those.
 # df[df['id']==39]['url']
 # df[(df['id']==1164)&(df['sourceid']==3)]['delta_dt']
+'''
 
 len(df[df['sourceid']>0]) # Total 1068 sources
 len(df[(df['sourceid']>0)&(df['delta_dt'].isna())]) #So we removed 38 sources which have no or wrong dates.
