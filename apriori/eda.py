@@ -6,6 +6,19 @@ from datetime import datetime
 
 src = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv") # fc + sources data
 fc = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/factcheck_websites.csv") # 1203 fc data
+### Load df which include delta_dt (time gap days), ai_pattern (all ai), ai_pattern_ent (NE ai)
+df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl') # contains only 198 fc and their sources
+
+# df['rating'] match id and its rating for all sources.
+df['rating'] = np.nan
+for i in range(len(df)):
+    df['rating'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['legitimacy'].reset_index(drop=True)[0]
+
+# assign T/F for sources if there is ai pattern for its fact check.
+df['src_ai_pattern'] = np.nan
+for i in range(len(df)):
+    df['src_ai_pattern'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['ai_pattern'].reset_index(drop=True)[0]
+
 
 len(src) # Total = 2271
 len(fc) #FC = 1203 => src = 2271 - 1203 = 1068
@@ -14,45 +27,116 @@ len(fc[fc['url']=="none"]['id'])
 len(src[src['title']=="none"]['id']) # Used "" to collect title. Among 1068 only 99 were not collected. But, among collected, there may be dummy titles.
 len(src[src['url']=="none"]['id']) #Among 1068, 718 does not contains url. That is mainly because they did not contain urls before 12/21/2019
 
-fc.columns
-x = fc['legitimacy'].value_counts().index.tolist()
-y = fc['legitimacy'].value_counts().tolist()
-plt.bar(x,y)
+# Making a labels of x by combining list of ratings and list of values e.g.) False (35)
+def conc(name,num):
+    labels = []
+    li_rate = name
+    for i in li_rate:
+        labels.append(str(i)+'('+str(num[i])+')')
+    return labels
+
+# name = df[df['sourceid']>0].groupby('rating')['delta_dt'].median().sort_values(ascending=False).index.tolist()
+# num = df[df['sourceid']>0]['rating'].value_counts()[i]
+
+# Ratings distribution for 1203
+fc['legitimacy'].value_counts() #absolute
+y = fc['legitimacy'].value_counts(normalize=True).mul(100).round(decimals=1).tolist() #perc
+name = fc['legitimacy'].value_counts().index.tolist()
+num =  fc['legitimacy'].value_counts()
+x = conc(name,num)
+plt.bar(x,y, color='#1f77b4')
 for i in range(len(x)):
     plt.text(x[i],y[i],y[i],ha='center')
 plt.xticks(rotation='vertical')
-plt.xlabel('Ratings for 1,203 fact checks')
-plt.ylabel('Number of fact checks')
+plt.xlabel('Ratings of 1,203 fact checks (number of fact checks)')
+plt.ylabel('Density (%, base = 1,203)')
 plt.tight_layout()
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/rating_dist_1203.png',dpi=600)
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/rating_dist_1203per.png',dpi=600)
 plt.show()
 plt.close()
 # x = fc.groupby('legitimacy').count()['id'].index.to_list()
 # y = fc.groupby('legitimacy').count()['id'].to_list()
 
-## Legitimacy distribution.
-fc['legitimacy'].value_counts()
-fc['legitimacy'].value_counts(normalize=True)
-
-# fc[fc['legitimacy']=="none"]["url"]
-
-## Legitimacy distribution for 198.
-fc[fc['sources_num']>0]['legitimacy'].value_counts()
-fc[fc['sources_num']>0]['legitimacy'].value_counts().sum() #total 198 which contains at least one source
-fc[fc['sources_num']>0]['legitimacy'].value_counts().plot(kind='bar')
+## Ratings distribution for 198.
+df[df['sourceid']==0]['legitimacy'].value_counts().sum() #total 198 which contains at least one source
+len(df[df['sourceid']==0]['legitimacy'])
+name = df[df['sourceid']==0]['legitimacy'].value_counts().index.tolist()
+num = df[df['sourceid']==0]['legitimacy'].value_counts()
+y=df[df['sourceid']==0]['legitimacy'].value_counts(normalize=True).mul(100).round(decimals=1).tolist()
+x = conc(name,num)
+plt.bar(x,y, color='#1f77b4')
+for i in range(len(x)):
+    plt.text(x[i],y[i],y[i],ha='center')
+plt.xticks(rotation='vertical')
+plt.xlabel('Ratings of 198 fact checks which contain at least on source (number of fact checks)')
+plt.ylabel('Density (%, base = 198)')
+plt.tight_layout()
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/rating_dist_198per.png',dpi=600)
 plt.show()
-fc[fc['sources_num']>0]['legitimacy'].value_counts(normalize=True)
+plt.close()
 
-## Sources Distribution
-fc[fc['sources_num']>0]['sources_num'].value_counts().plot(kind='bar')
-fc[fc['sources_num']>0]['sources_num'].value_counts().describe()
+
+## Distribution of the number of sources for 198 fact checks
+name = fc[fc['sources_num']>0]['sources_num'].value_counts().sort_index().index.tolist()
+num = fc[fc['sources_num']>0]['sources_num'].value_counts().sort_index()
+y = fc[fc['sources_num']>0]['sources_num'].value_counts(normalize=True).mul(100).sort_index().round(decimals=1).tolist()
+x = conc(name,num)
+plt.bar(x,y, color='#1f77b4')
+for i in range(len(x)):
+    plt.text(x[i],y[i],y[i],ha='center')
+plt.xticks(rotation='vertical')
+plt.xlabel('Number of sources for each fact check (count of fact checks)')
+plt.ylabel('Density (%, base = 198)')
+plt.tight_layout()
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/numsources_dist.png',dpi=600)
 plt.show()
-fc[fc['sources_num']>0]['sources_num'].value_counts()
-fc[fc['sources_num']>0]['sources_num'].value_counts(normalize=True)
-fc['sources_num'].value_counts(normalize=True)
+plt.close()
 
-## Sources distribution grouped by legitimacy (for 1,203 total)
+## Number of sources distribution grouped by legitimacy (based on 198 fact checks legitimacy for 1,068 sources)
+y = df[df['sourceid']==0][['legitimacy','sources_num']].astype({'sources_num':'int'}).groupby('legitimacy').sum().sort_values('sources_num',ascending=False)['sources_num'].tolist()# total source numbers
+name = df[df['sourceid']==0][['legitimacy','sources_num']].astype({'sources_num':'int'}).groupby('legitimacy').sum().sort_values('sources_num',ascending=False).index.tolist()
+num = df[df['sourceid']==0]['legitimacy'].value_counts() # fact checks number (total 198)
+x = conc(name,num)
+# y2_sort = []
+# for r in name:
+#     y2_sort.append(y2.loc[r][0])
+#     print(r,y2.loc[r][0])
+plt.bar(x,y, color='#1f77b4')
+for i in range(len(x)):
+    plt.text(x[i],y[i],y[i],ha='center')
+plt.xticks(x, rotation='vertical')
+plt.xlabel('Ratings of 198 fact checks (number of fact checks)')
+plt.ylabel('Number of sources')
+plt.tight_layout()
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/num_srcs.png.png',dpi=600)
+plt.show()
+plt.close()
 
+## Average number of sources distribution grouped by legitimacy (based on 198 fact checks legitimacy for 1,068 sources)
+y = df[df['sourceid']==0][['legitimacy','sources_num']].astype({'sources_num':'int'}).groupby('legitimacy').mean().round(decimals=1).sort_values('sources_num',ascending=False)['sources_num'].tolist() # mean source numbers
+name = df[df['sourceid']==0][['legitimacy','sources_num']].astype({'sources_num':'int'}).groupby('legitimacy').mean().sort_values('sources_num',ascending=False).index.tolist()
+num = df[df['sourceid']==0]['legitimacy'].value_counts() # fact checks number (total 198)
+x = conc(name,num)
+# y2_sort = []
+# for r in name:
+#     y2_sort.append(y2.loc[r][0])
+#     print(r,y2.loc[r][0])
+plt.bar(x,y, color='#1f77b4')
+for i in range(len(x)):
+    plt.text(x[i],y[i],y[i],ha='center')
+plt.xticks(x, rotation='vertical')
+plt.xlabel('Ratings of 198 fact checks (number of fact checks)')
+plt.ylabel('Average number of sources \n(# sources / # fact checks)')
+plt.tight_layout()
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/mean_num_srcs.png',dpi=600)
+plt.show()
+plt.close()
+
+
+
+
+
+'''
 fc[['legitimacy','sources_num']].groupby('legitimacy').sum().sort_values('sources_num',ascending=False)
 fc[['legitimacy','sources_num']].groupby('legitimacy').sum().sort_values('sources_num',ascending=False).plot(kind='bar')
 plt.show()
@@ -77,9 +161,8 @@ fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy').sum(
 fake = fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy').sum().sort_values('sources_num',ascending=False).iloc[[0,3]].sum()/fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy').count().sort_values('sources_num',ascending=False).iloc[[0,3]].sum()
 real = fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy').sum().sort_values('sources_num',ascending=False).iloc[[1,6]].sum()/fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy').count().sort_values('sources_num',ascending=False).iloc[[1,6]].sum()
 fake, real
+'''
 
-### Load df which include delta_dt (time gap days), ai_pattern (all ai), ai_pattern_ent (NE ai)
-df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
 
 ## EDA
 # Among all ai: 58.6%
@@ -101,14 +184,7 @@ lbls = list(set(df['legitimacy'].tolist()))
 for i in lbls:
     print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent']))*100) + "%)")
 
-# df['rating'] match id and its rating for all sources.
-df['rating'] = np.nan
-for i in range(len(df)):
-    df['rating'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['legitimacy'].reset_index(drop=True)[0]
 
-df['src_ai_pattern'] = np.nan
-for i in range(len(df)):
-    df['src_ai_pattern'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['ai_pattern'].reset_index(drop=True)[0]
 
 ### EDA for Time Gap (days)
 '''

@@ -36,7 +36,6 @@ for i in range(len(df)):
         df['total'][i] = df['title'][i] # Only use title for ai patterns
 
 ## text cleaning.
-
 # nlp = spacy.load("en_core_web_trf") # better accuracy
 nlp = spacy.load("en_core_web_sm") # efficient
 # stops = stopwords.words("english") # nltk
@@ -86,7 +85,6 @@ for i in range(len(df['ne_total'])):
     for j in text:
         make_li.append(str(j).lower())
     df['ne_total'][i] = make_li
-df['ne_total'][]
 
 # NE and Tokenize:
 # Named Entity Recognition: cl_total + NE applied.
@@ -565,7 +563,38 @@ with open(output_csv3,'w') as f:
             c.writerow(li)
 
 
-#### NE and Tokenize ai pattern: Find AI pattern for all pairwises of AC in the claim of fake news BASED ON ENTITY#####
+#### NE only for claim, and Tokenize ai pattern: Find AI pattern for all pairwises of AC in the claim of fake news BASED ON ENTITY#####
+def ai_pattern_ent_claim_words(id,key1,key2):
+    i = id
+    k1_idx = [] # index contains keyword 1
+    k2_idx = [] # index contains keyword 2
+    k1 = key1
+    k2 = key2
+    #############################################################################
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==1).
+        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
+            foo1 = df[(df['id']==i)&(df['sourceid']==j)]['netk_claim'].index[0] #index for id=i & sourceid=j
+            if k1 in df[(df['id']==i)&(df['sourceid']==j)]['netk_claim'][foo1]:
+                k1_idx.append(foo1)
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==2).
+        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
+            foo2 = df[(df['id'] == i) & (df['sourceid'] == j)]['netk_claim'].index[0]  # index for id=i & sourceid=j
+            if k2 in df[(df['id']==i)&(df['sourceid']==j)]['netk_claim'][foo2]:
+                k2_idx.append(foo2)
+    # 3. association
+    li_commonkeys = []
+    for k1j in k1_idx:
+        for k2j in k2_idx:
+            if k1j != k2j:
+                set1 = set(df['netk_claim'][k1j])
+                set2 = set(df['netk_claim'][k2j])
+                inter = set1.intersection(set2)
+                inter.discard(k1) # remove keyword A form candidates of B
+                inter.discard(k2) # remove keyword C form candidates of B
+                inter_list = list(inter)
+                li_commonkeys.extend(inter_list)
+    return (k1,k2,li_commonkeys)
+
 all_patterns4 = {}
 id_list =df[df['sourceid']==0]['id'].tolist()
 # id_max = max(df['id'])
@@ -576,6 +605,18 @@ for id_num in id_list:
     for i in range(words_len-1):
         for j in range(i+1,words_len):
             all_patterns4['id%s' %id_num].append(ai_pattern_ent_claim(id_num,words[i],words[j]))
+
+output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/words.csv"
+all_patterns4.items()
+header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
+with open(output_csv4,'w') as f:
+    c = csv.writer(f) # write csv on f.
+    c.writerow(header) # header
+    for key, value in all_patterns4.items():
+        for case in value:
+            li = []
+            li.extend([key,case[0],case[1],bool(case[2]),len(case[2])," ",case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
+            c.writerow(li)
 
 df['ai_pattern_ent_claim'] = np.nan
 k = 0
@@ -590,18 +631,44 @@ df['ai_pattern_ent_claim'].sum() # 67, 33.8%
 # print(all_patterns3['id1'])
 # df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
 
+## Now, only pick the words.
+all_patterns4_words = {}
+id_list =df[df['sourceid']==0]['id'].tolist()
+# id_max = max(df['id'])
+for id_num in id_list:
+    all_patterns4_words['id%s' %id_num] = []
+    words = df[(df['id']==id_num)&(df['sourceid']==0)]['netk_claim'].reset_index(drop=True)[0]
+    words_len = len(words)
+    for i in range(words_len-1):
+        for j in range(i+1,words_len):
+            all_patterns4_words['id%s' %id_num].extend(ai_pattern_ent_claim_words(id_num,words[i],words[j])[2])
+
+wlist = all_patterns4_words['id2']
+
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+#convert list to string and generate
+unique_string=(" ").join(wlist)
+wordcloud = WordCloud(width = 800, height = 800,
+                background_color ='white',min_font_size=15).generate(unique_string)
+plt.figure(figsize=(15,8))
+plt.imshow(wordcloud)
+plt.axis("off")
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/rf_medgap_nai.png',dpi=600,bbox_inches='tight')
+plt.show()
+plt.close()
+
+all_patterns4_words.items()
 # Make a CSV file and List of AB & BC patterns.
-output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/patterns_ent_tk_claim.csv"
-# all_patterns4.items()
-header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
+output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/words.csv"
+all_patterns4_words.items()
+header = ['id','keywords B']
 with open(output_csv4,'w') as f:
     c = csv.writer(f) # write csv on f.
     c.writerow(header) # header
-    for key, value in all_patterns4.items():
-        for case in value:
-            li = []
-            li.extend([key,case[0],case[1],bool(case[2]),len(case[2])," ",case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
-            c.writerow(li)
+    for key, value in all_patterns4_words.items():
+        c.writerow([key,value])
+
 
 # Check whether there is at least one ai pattern found for each fc(id) for Named ENTITY ai pattern
 # Calculate delta day
