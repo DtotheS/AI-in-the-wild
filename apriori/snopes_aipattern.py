@@ -452,6 +452,37 @@ ai_pattern(6,c6_1,c6_2)
 # AC Key word selection: 1) human name: e.g., politician. 2) location 3) topic
 # Data Collection
 
+def ai_pattern_words(id,key1,key2):
+    i = id
+    k1_idx = [] # index contains keyword 1
+    k2_idx = [] # index contains keyword 2
+    k1 = key1
+    k2 = key2
+    #############################################################################
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==1).
+        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
+            foo1 = df[(df['id']==i)&(df['sourceid']==j)]['cl_total'].index[0] #index for id=i & sourceid=j
+            if k1 in df[(df['id']==i)&(df['sourceid']==j)]['cl_total'][foo1]:
+                k1_idx.append(foo1)
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==2).
+        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
+            foo2 = df[(df['id'] == i) & (df['sourceid'] == j)]['cl_total'].index[0]  # index for id=i & sourceid=j
+            if k2 in df[(df['id']==i)&(df['sourceid']==j)]['cl_total'][foo2]:
+                k2_idx.append(foo2)
+    # 3. association
+    li_commonkeys = []
+    for k1j in k1_idx:
+        for k2j in k2_idx:
+            if k1j != k2j:
+                set1 = set(df['cl_total'][k1j])
+                set2 = set(df['cl_total'][k2j])
+                inter = set1.intersection(set2)
+                inter.discard(k1) # remove keyword A form candidates of B
+                inter.discard(k2) # remove keyword C form candidates of B
+                inter_list = list(inter)
+                li_commonkeys.extend(inter_list)
+    return (k1,k2,li_commonkeys)
+
 #### Find all AI pattern for all pairwises of AC in the claim of fake news BASED ON THE TOTAL
 all_patterns = {}
 id_list =df[df['sourceid']==0]['id'].tolist()
@@ -463,6 +494,23 @@ for id_num in id_list:
     for i in range(words_len-1):
         for j in range(i+1,words_len):
             all_patterns['id%s' %id_num].append(ai_pattern(id_num,words[i],words[j]))
+
+df['ai_Bwords'] = np.nan
+indx = 0
+for id in df[df['sourceid']==0]['id']:
+    bs = []
+    words = df[(df['id'] == id) & (df['sourceid'] == 0)]['cl_total'].reset_index(drop=True)[0]
+    words_len = len(words)
+    for i in range(words_len-1):
+        for j in range(i+1,words_len):
+            bs.extend(ai_pattern_words(id,words[i],words[j])[2])
+    df['ai_Bwords'][indx] = bs
+    indx += 1
+
+# words = df[(df['id'] == 1) & (df['sourceid'] == 0)]['cl_total'].reset_index(drop=True)[0]
+# ai_pattern_words(1,words[11],words[12])[2]
+# len(words)
+df['ai_words'][1]
 
 # print(all_patterns['id1'])
 # df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
@@ -643,20 +691,57 @@ for id_num in id_list:
         for j in range(i+1,words_len):
             all_patterns4_words['id%s' %id_num].extend(ai_pattern_ent_claim_words(id_num,words[i],words[j])[2])
 
-wlist = all_patterns4_words['id2']
+df['ai_netk_claim_Bwords'] = np.nan
+indx = 0
+for id in df[df['sourceid']==0]['id']:
+    bs = []
+    words = df[(df['id'] == id) & (df['sourceid'] == 0)]['netk_claim'].reset_index(drop=True)[0]
+    words_len = len(words)
+    for i in range(words_len-1):
+        for j in range(i+1,words_len):
+            bs.extend(ai_pattern_ent_claim_words(id,words[i],words[j])[2])
+    df['ai_netk_claim_Bwords'][indx] = bs
+    indx += 1
 
-import matplotlib.pyplot as plt
-from wordcloud import WordCloud
-#convert list to string and generate
-unique_string=(" ").join(wlist)
-wordcloud = WordCloud(width = 800, height = 800,
-                background_color ='white',min_font_size=15).generate(unique_string)
-plt.figure(figsize=(15,8))
-plt.imshow(wordcloud)
-plt.axis("off")
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/rf_medgap_nai.png',dpi=600,bbox_inches='tight')
-plt.show()
-plt.close()
+df['ai_Bwords'][1]
+df['ai_netk_claim_Bwords'][1]
+# df.to_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl')
+
+all_b = []
+claim_b = []
+for i in range(len(df[df['sourceid']==0])):
+    all_b.extend(df['ai_Bwords'][i])
+    claim_b.extend(df['ai_netk_claim_Bwords'][i])
+
+all_b_fake = []
+claim_b_fake = []
+for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))])):
+    all_b_fake.extend(df['ai_Bwords'][i])
+    claim_b_fake.extend(df['ai_netk_claim_Bwords'][i])
+
+all_b_real = []
+claim_b_real = []
+for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['TRUE','Mostly True']))])):
+    all_b_real.extend(df['ai_Bwords'][i])
+    claim_b_real.extend(df['ai_netk_claim_Bwords'][i])
+# df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))]
+
+# wlist = all_patterns4_words['id2']
+def fig_b(word_list,file_name):
+    import matplotlib.pyplot as plt
+    from wordcloud import WordCloud
+    # convert list to string and generate
+    unique_string = (" ").join(word_list)
+    wordcloud = WordCloud(width=800, height=800,
+                          background_color='white', min_font_size=15, collocations=False).generate(unique_string)
+    plt.figure(figsize=(15, 8))
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/%s.png' % (file_name), dpi=600, bbox_inches='tight')
+    plt.show()
+    plt.close()
+
+fig_b(claim_b_real,'bs_real_claim')
 
 all_patterns4_words.items()
 # Make a CSV file and List of AB & BC patterns.
@@ -690,5 +775,5 @@ for i in range(len(df)):
 len(df[df['delta_dt'].isna()])  # became 38: There are 7 cases which shows wrong date for source. We removed those.
 
 # Safe df for EDA later.
-# dfnew = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
+df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
 df.to_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
