@@ -7,8 +7,7 @@ from datetime import datetime
 src = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv") # fc + sources data
 fc = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/factcheck_websites.csv") # 1203 fc data
 ### Load df which include delta_dt (time gap days), ai_pattern (all ai), ai_pattern_ent (NE ai)
-df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl') # contains only 198 fc and their sources
-
+df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl') # contains only 198 fc and their sources
 # df['rating'] match id and its rating for all sources.
 df['rating'] = np.nan
 for i in range(len(df)):
@@ -86,9 +85,44 @@ for i in range(len(x)):
     plt.text(x[i],y[i],y[i],ha='center')
 plt.xticks(rotation='vertical')
 plt.xlabel('Number of sources for each fact check (count of fact checks)')
+plt.ylim([0,22])
 plt.ylabel('Density (%, base = 198)')
 plt.tight_layout()
 plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/numsources_dist.png',dpi=600)
+plt.show()
+plt.close()
+
+## Real: Distribution of the number of sources for 198 fact checks
+name = fc[(fc['sources_num']>0)&(fc['legitimacy'].isin(['TRUE', 'Mostly True']))]['sources_num'].value_counts().sort_index().index.tolist()
+num = fc[(fc['sources_num']>0)&(fc['legitimacy'].isin(['TRUE', 'Mostly True']))]['sources_num'].value_counts().sort_index()
+y = fc[(fc['sources_num']>0)&(fc['legitimacy'].isin(['TRUE', 'Mostly True']))]['sources_num'].value_counts(normalize=True).mul(100).sort_index().round(decimals=1).tolist()
+x = conc(name,num)
+plt.bar(x,y, color='#1f77b4')
+for i in range(len(x)):
+    plt.text(x[i],y[i],y[i],ha='center')
+plt.xticks(rotation='vertical')
+plt.xlabel('Number of sources for each REAL fact check (count of REAL fact checks)')
+plt.ylim([0,22])
+plt.ylabel('Density (%, base = 49)')
+plt.tight_layout()
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/numsources_dist_real.png',dpi=600)
+plt.show()
+plt.close()
+
+## Fake: Distribution of the number of sources for 198 fact checks
+name = fc[(fc['sources_num']>0)&(fc['legitimacy'].isin(['FALSE', 'Mostly False']))]['sources_num'].value_counts().sort_index().index.tolist()
+num = fc[(fc['sources_num']>0)&(fc['legitimacy'].isin(['FALSE', 'Mostly False']))]['sources_num'].value_counts().sort_index()
+y = fc[(fc['sources_num']>0)&(fc['legitimacy'].isin(['FALSE', 'Mostly False']))]['sources_num'].value_counts(normalize=True).mul(100).sort_index().round(decimals=1).tolist()
+x = conc(name,num)
+plt.bar(x,y, color='#1f77b4')
+for i in range(len(x)):
+    plt.text(x[i],y[i],y[i],ha='center')
+plt.xticks(rotation='vertical')
+plt.xlabel('Number of sources for each FAKE fact check (count of FAKE fact checks)')
+plt.ylim([0,22])
+plt.ylabel('Density (%, base = 80)')
+plt.tight_layout()
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/numsources_dist_fake.png',dpi=600)
 plt.show()
 plt.close()
 
@@ -163,15 +197,15 @@ real = fc[fc['sources_num']>0][['legitimacy','sources_num']].groupby('legitimacy
 fake, real
 '''
 
-
+df.columns
 ## EDA
-# Among all ai: 58.6%
+# Among all ai: 56.1%
 df['ai_pattern'].sum()
-df[df['sourceid']==0]['ai_pattern'].sum() / len(df[df['sourceid']==0])# among 198, 116 have ai pattern.
+df[df['sourceid']==0]['ai_pattern'].sum() / len(df[df['sourceid']==0])# among 198, 111 have ai pattern.
 
-# Among NE ai: 20.7%
-df['ai_pattern_ent'].sum()
-df[df['sourceid']==0]['ai_pattern_ent'].sum() / len(df[df['sourceid']==0])# among 198, only 41 have ne ai pattern.
+# Among NE to Claim ai: 33.8%
+df['ai_pattern_ent_claim'].sum()
+df[df['sourceid']==0]['ai_pattern_ent_claim'].sum() / len(df[df['sourceid']==0])# among 198, only 67 have ne ai pattern.
 
 ## Find percentage of existence of ai pattern for each label.
 # All AI pattern
@@ -182,8 +216,7 @@ for i in lbls:
 # NE AI Pattern
 lbls = list(set(df['legitimacy'].tolist()))
 for i in lbls:
-    print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent']))*100) + "%)")
-
+    print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim']))*100) + "%)")
 
 
 ### EDA for Time Gap (days)
@@ -392,3 +425,66 @@ with open(output_csv,'w') as f:
     c.writerow(header) # header
     for i in range(len(df['delta_dt'])):
         c.writerow([df['delta_dt'][i]])
+
+### Common B words
+
+all_b = []
+claim_b = []
+for i in range(len(df[df['sourceid']==0])):
+    all_b.extend(df['ai_Bwords'][i])
+    claim_b.extend(df['ai_netk_claim_Bwords'][i])
+
+all_b_fake = []
+claim_b_fake = []
+for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))])):
+    all_b_fake.extend(df['ai_Bwords'][i])
+    claim_b_fake.extend(df['ai_netk_claim_Bwords'][i])
+
+all_b_real = []
+claim_b_real = []
+for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['TRUE','Mostly True']))])):
+    all_b_real.extend(df['ai_Bwords'][i])
+    claim_b_real.extend(df['ai_netk_claim_Bwords'][i])
+# df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))]
+
+# wlist = all_patterns4_words['id2']
+def fig_b(word_list,file_name):
+    import matplotlib.pyplot as plt
+    from wordcloud import WordCloud
+    # convert list to string and generate
+    unique_string = (" ").join(word_list)
+    wordcloud = WordCloud(width=800, height=800,
+                          background_color='white', min_font_size=15, collocations=False).generate(unique_string)
+    plt.figure(figsize=(15, 8))
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/%s.png' % (file_name), dpi=600, bbox_inches='tight')
+    plt.show()
+    plt.close()
+
+fig_b(claim_b_real,'bs_real_claim')
+
+'''
+all_patterns4_words.items()
+# Make a CSV file and List of AB & BC patterns.
+output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/words.csv"
+all_patterns4_words.items()
+header = ['id','keywords B']
+with open(output_csv4,'w') as f:
+    c = csv.writer(f) # write csv on f.
+    c.writerow(header) # header
+    for key, value in all_patterns4_words.items():
+        c.writerow([key,value])
+'''
+
+from collections import Counter
+# c = Counter(all_b)
+# c.most_common(10)[2][1]
+# len(all_b)
+var_li = [all_b,claim_b,all_b_real,claim_b_real,all_b_fake,claim_b_fake,]
+for i in var_li:
+    print(len(i))
+    c=Counter(i)
+    print(c.most_common(10))
+    print([round(c[j[0]] / len(i) *100,1) for j in c.most_common(10)])
+

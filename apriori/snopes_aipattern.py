@@ -9,6 +9,12 @@ from datetime import datetime as dt
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+# from keybert import KeyBERT
+import yake
+from nltk.stem import WordNetLemmatizer
+
+## Reference
+# Keyword Extraction : https://ourcodeworld.com/articles/read/1613/top-5-best-python-libraries-to-extract-keywords-from-text-automatically
 
 # os.getcwd()
 ogdf = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv") # fc + sources data
@@ -35,6 +41,39 @@ for i in range(len(df)):
     else:
         df['total'][i] = df['title'][i] # Only use title for ai patterns
 
+
+## Keyword extraction
+# YAKE: https://github.com/LIAAD/yake
+# https://amitness.com/keyphrase-extraction/
+language = "en"
+max_ngram_size = 2
+deduplication_thresold = 0.3
+deduplication_algo = 'seqm'
+windowSize = 1
+numOfKeywords = 20
+stops = STOP_WORDS #spacy
+
+custom_kw_extractor = yake.KeywordExtractor(lan=language, n=max_ngram_size, dedupLim=deduplication_thresold, dedupFunc=deduplication_algo, windowsSize=windowSize, top=numOfKeywords, features=None)
+lemma = WordNetLemmatizer()
+
+# text = df['total'][0]
+# keywords = custom_kw_extractor.extract_keywords(text)
+# keywords
+# df['ke_total'][]
+# df['total'][0]
+
+df['ke12_total'] = np.nan
+for i in range(len(df['ke12_total'])):
+    foo = keywords = custom_kw_extractor.extract_keywords(df['total'][i])
+    make_li = []
+    for j in foo:
+        # if len(j[0].split())>1:
+        make_li.append(lemma.lemmatize(j[0]).lower())
+    df['ke12_total'][i] = make_li
+
+df['ke_total'][0]
+df['ke2_total'][0]
+df['ke12_total'][2]
 ## text cleaning.
 # nlp = spacy.load("en_core_web_trf") # better accuracy
 nlp = spacy.load("en_core_web_sm") # efficient
@@ -263,8 +302,10 @@ for i in range(1,max(df['id'])+1):
 
 common_keys
 '''
+
 # 3. Finding an ai-pattern function.
 ## Removed A or C from the candidates of B.
+'''
 def ai_pattern(id,key1,key2):
     i = id
     k1_idx = [] # index contains keyword 1
@@ -398,6 +439,41 @@ def ai_pattern_ent_claim(id,key1,key2):
     ordered_x = x.most_common()
     return (k1,k2,ordered_x)
 '''
+
+def ai_pattern2(c_name,id,key1,key2):
+    i = id
+    k1_idx = [] # index contains keyword 1
+    k2_idx = [] # index contains keyword 2
+    k1 = key1
+    k2 = key2
+    #############################################################################
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==1).
+        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
+            foo1 = df[(df['id']==i)&(df['sourceid']==j)][c_name].index[0] #index for id=i & sourceid=j
+            if k1 in df[(df['id']==i)&(df['sourceid']==j)][c_name][foo1]:
+                k1_idx.append(foo1)
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==2).
+        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
+            foo2 = df[(df['id'] == i) & (df['sourceid'] == j)][c_name].index[0]  # index for id=i & sourceid=j
+            if k2 in df[(df['id']==i)&(df['sourceid']==j)][c_name][foo2]:
+                k2_idx.append(foo2)
+    # 3. association
+    li_commonkeys = []
+    for k1j in k1_idx:
+        for k2j in k2_idx:
+            if k1j != k2j:
+                set1 = set(df[c_name][k1j])
+                set2 = set(df[c_name][k2j])
+                inter = set1.intersection(set2)
+                inter.discard(k1) # remove keyword A form candidates of B
+                inter.discard(k2) # remove keyword C form candidates of B
+                inter_list = list(inter)
+                li_commonkeys.extend(inter_list)
+    x = Counter(li_commonkeys)
+    ordered_x = x.most_common()
+    return (k1,k2,ordered_x)
+
+'''
 # Check sources date which are late then article publsihed date.
 id_list =df[df['sourceid']==0]['id'].tolist()
 for id in id_list:
@@ -484,16 +560,58 @@ def ai_pattern_words(id,key1,key2):
     return (k1,k2,li_commonkeys)
 
 #### Find all AI pattern for all pairwises of AC in the claim of fake news BASED ON THE TOTAL
-all_patterns = {}
-id_list =df[df['sourceid']==0]['id'].tolist()
-# id_max = max(df['id'])
-for id_num in id_list:
-    all_patterns['id%s' %id_num] = []
-    words = df[(df['id']==id_num)&(df['sourceid']==0)]['cl_total'].reset_index(drop=True)[0]
-    words_len = len(words)
-    for i in range(words_len-1):
-        for j in range(i+1,words_len):
-            all_patterns['id%s' %id_num].append(ai_pattern(id_num,words[i],words[j]))
+def all_patterns(cl_name):
+    all_patterns = {}
+    id_list = df[df['sourceid'] == 0]['id'].tolist()
+    # id_max = max(df['id'])
+    for id_num in id_list:
+        all_patterns['id%s' % id_num] = []
+        words = df[(df['id'] == id_num) & (df['sourceid'] == 0)][cl_name].reset_index(drop=True)[0]
+        words_len = len(words)
+        for i in range(words_len - 1):
+            for j in range(i + 1, words_len):
+                all_patterns['id%s' % id_num].append(ai_pattern2(cl_name, id_num, words[i], words[j]))
+
+    return all_patterns
+
+pat1 = all_patterns('cl_total')
+
+# All ai pattern: Tag True if ai pattern found for each fc for TOTAL
+df['ai_pattern'] = np.nan
+k = 0
+for i in pat1:
+    for ii in range(len(pat1[i])):
+        if pat1[i][ii][2]:
+            df['ai_pattern'][k] = True
+            break
+    k += 1
+df['ai_pattern'].sum() # 111, 56%
+
+# lbls = list(set(df['legitimacy'].tolist()))
+# for i in lbls:
+#     print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern']))*100) + "%)")
+
+# print(all_patterns['id1'])
+# df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
+
+# Make a CSV file and List of AB & BC patterns.
+all_patterns.items()
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/patterns_v2.csv"
+def pattern_csv(path,dict):
+    header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
+    with open(path, 'w') as f:
+        c = csv.writer(f)  # write csv on f.
+        c.writerow(header)  # header
+        for key, value in dict.items():
+            for case in value:
+                li = []
+                li.extend([key, case[0], case[1], bool(case[2]), len(case[2]), " ",
+                           case[2]])  # case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
+                c.writerow(li)
+
+pat1 = all_patterns('cl_total')
+pattern_csv(output_csv,pat1)
+
 
 df['ai_Bwords'] = np.nan
 indx = 0
@@ -506,48 +624,16 @@ for id in df[df['sourceid']==0]['id']:
             bs.extend(ai_pattern_words(id,words[i],words[j])[2])
     df['ai_Bwords'][indx] = bs
     indx += 1
+df['ai_Bwords'][198]
 
 # words = df[(df['id'] == 1) & (df['sourceid'] == 0)]['cl_total'].reset_index(drop=True)[0]
 # ai_pattern_words(1,words[11],words[12])[2]
 # len(words)
-df['ai_words'][1]
 
-# print(all_patterns['id1'])
-# df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
-
-# Make a CSV file and List of AB & BC patterns.
-output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/patterns_v2.csv"
-
-all_patterns.items()
-
-header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
-
-with open(output_csv,'w') as f:
-    c = csv.writer(f) # write csv on f.
-    c.writerow(header) # header
-    for key, value in all_patterns.items():
-        for case in value:
-            li = []
-            li.extend([key,case[0],case[1],bool(case[2]),len(case[2])," ",case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
-            c.writerow(li)
-
-# All ai pattern: Tag True if ai pattern found for each fc for TOTAL
-df['ai_pattern'] = np.nan
-k = 0
-for i in all_patterns:
-    for ii in range(len(all_patterns[i])):
-        if all_patterns[i][ii][2]:
-            df['ai_pattern'][k] = True
-            break
-    k += 1
-
-df['ai_pattern'].sum() # 111, 56%
-
-# lbls = list(set(df['legitimacy'].tolist()))
-# for i in lbls:
-#     print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern']))*100) + "%)")
 
 #### NE ai pattern: Find AI pattern for all pairwises of AC in the claim of fake news BASED ON ENTITY#####
+pat_ne = all_patterns('ne_total')
+'''
 all_patterns2 = {}
 id_list =df[df['sourceid']==0]['id'].tolist()
 # id_max = max(df['id'])
@@ -558,13 +644,13 @@ for id_num in id_list:
     for i in range(words_len-1):
         for j in range(i+1,words_len):
             all_patterns2['id%s' %id_num].append(ai_pattern_ent(id_num,words[i],words[j]))
-
+'''
 # Check whether there is at least one ai pattern found for each fc(id) for Named ENTITY ai pattern
 df['ai_pattern_ent'] = np.nan
 k = 0
-for i in all_patterns2:
-    for ii in range(len(all_patterns2[i])):
-        if all_patterns2[i][ii][2]:
+for i in pat_ne:
+    for ii in range(len(pat_ne[i])):
+        if pat_ne[i][ii][2]:
             df['ai_pattern_ent'][k] = True
             break
     k += 1
@@ -575,6 +661,8 @@ df['ai_pattern_ent'].sum() # not found.
 
 
 #### NE and Tokenize ai pattern: Find AI pattern for all pairwises of AC in the claim of fake news BASED ON ENTITY#####
+pat_netk = all_patterns('netk_total')
+'''
 all_patterns3 = {}
 id_list =df[df['sourceid']==0]['id'].tolist()
 # id_max = max(df['id'])
@@ -595,11 +683,12 @@ for i in all_patterns3:
             break
     k += 1
 df['ai_pattern_ent_tk'].sum() #41, 20.7%
-
+'''
 
 # Make a CSV file and List of AB & BC patterns.
 output_csv3 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/patterns_ent_tk_v1.csv"
-
+pattern_csv(output_csv3,pat_netk)
+'''
 header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
 with open(output_csv3,'w') as f:
     c = csv.writer(f) # write csv on f.
@@ -609,7 +698,7 @@ with open(output_csv3,'w') as f:
             li = []
             li.extend([key,case[0],case[1],bool(case[2]),len(case[2])," ",case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
             c.writerow(li)
-
+'''
 
 #### NE only for claim, and Tokenize ai pattern: Find AI pattern for all pairwises of AC in the claim of fake news BASED ON ENTITY#####
 def ai_pattern_ent_claim_words(id,key1,key2):
@@ -643,6 +732,8 @@ def ai_pattern_ent_claim_words(id,key1,key2):
                 li_commonkeys.extend(inter_list)
     return (k1,k2,li_commonkeys)
 
+pat_netkclaim = all_patterns('netk_claim')
+'''
 all_patterns4 = {}
 id_list =df[df['sourceid']==0]['id'].tolist()
 # id_max = max(df['id'])
@@ -653,9 +744,13 @@ for id_num in id_list:
     for i in range(words_len-1):
         for j in range(i+1,words_len):
             all_patterns4['id%s' %id_num].append(ai_pattern_ent_claim(id_num,words[i],words[j]))
+'''
+
 
 output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/words.csv"
-all_patterns4.items()
+pattern_csv(output_csv4,pat_netkclaim)
+
+'''
 header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
 with open(output_csv4,'w') as f:
     c = csv.writer(f) # write csv on f.
@@ -665,12 +760,12 @@ with open(output_csv4,'w') as f:
             li = []
             li.extend([key,case[0],case[1],bool(case[2]),len(case[2])," ",case[2]]) #case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
             c.writerow(li)
-
+'''
 df['ai_pattern_ent_claim'] = np.nan
 k = 0
-for i in all_patterns4:
-    for ii in range(len(all_patterns4[i])):
-        if all_patterns4[i][ii][2]:
+for i in pat_netkclaim:
+    for ii in range(len(pat_netkclaim[i])):
+        if pat_netkclaim[i][ii][2]:
             df['ai_pattern_ent_claim'][k] = True
             break
     k += 1
@@ -680,6 +775,7 @@ df['ai_pattern_ent_claim'].sum() # 67, 33.8%
 # df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
 
 ## Now, only pick the words.
+'''
 all_patterns4_words = {}
 id_list =df[df['sourceid']==0]['id'].tolist()
 # id_max = max(df['id'])
@@ -690,6 +786,7 @@ for id_num in id_list:
     for i in range(words_len-1):
         for j in range(i+1,words_len):
             all_patterns4_words['id%s' %id_num].extend(ai_pattern_ent_claim_words(id_num,words[i],words[j])[2])
+'''
 
 df['ai_netk_claim_Bwords'] = np.nan
 indx = 0
@@ -703,56 +800,8 @@ for id in df[df['sourceid']==0]['id']:
     df['ai_netk_claim_Bwords'][indx] = bs
     indx += 1
 
-df['ai_Bwords'][1]
-df['ai_netk_claim_Bwords'][1]
-# df.to_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl')
-
-all_b = []
-claim_b = []
-for i in range(len(df[df['sourceid']==0])):
-    all_b.extend(df['ai_Bwords'][i])
-    claim_b.extend(df['ai_netk_claim_Bwords'][i])
-
-all_b_fake = []
-claim_b_fake = []
-for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))])):
-    all_b_fake.extend(df['ai_Bwords'][i])
-    claim_b_fake.extend(df['ai_netk_claim_Bwords'][i])
-
-all_b_real = []
-claim_b_real = []
-for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['TRUE','Mostly True']))])):
-    all_b_real.extend(df['ai_Bwords'][i])
-    claim_b_real.extend(df['ai_netk_claim_Bwords'][i])
-# df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))]
-
-# wlist = all_patterns4_words['id2']
-def fig_b(word_list,file_name):
-    import matplotlib.pyplot as plt
-    from wordcloud import WordCloud
-    # convert list to string and generate
-    unique_string = (" ").join(word_list)
-    wordcloud = WordCloud(width=800, height=800,
-                          background_color='white', min_font_size=15, collocations=False).generate(unique_string)
-    plt.figure(figsize=(15, 8))
-    plt.imshow(wordcloud)
-    plt.axis("off")
-    plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/%s.png' % (file_name), dpi=600, bbox_inches='tight')
-    plt.show()
-    plt.close()
-
-fig_b(claim_b_real,'bs_real_claim')
-
-all_patterns4_words.items()
-# Make a CSV file and List of AB & BC patterns.
-output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/words.csv"
-all_patterns4_words.items()
-header = ['id','keywords B']
-with open(output_csv4,'w') as f:
-    c = csv.writer(f) # write csv on f.
-    c.writerow(header) # header
-    for key, value in all_patterns4_words.items():
-        c.writerow([key,value])
+df['ai_Bwords'][0]
+df['ai_netk_claim_Bwords'][0]
 
 
 # Check whether there is at least one ai pattern found for each fc(id) for Named ENTITY ai pattern
@@ -775,5 +824,51 @@ for i in range(len(df)):
 len(df[df['delta_dt'].isna()])  # became 38: There are 7 cases which shows wrong date for source. We removed those.
 
 # Safe df for EDA later.
-df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
-df.to_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df2.pkl')
+df.to_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl')
+df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl')
+
+#### Apply KE and find ai pattern
+pat_ke = all_patterns('ke_total')
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/ke_patterns.csv"
+pattern_csv(output_csv,pat_ke)
+
+# All ai pattern: Tag True if ai pattern found for each fc for TOTAL
+df['ke_ai_pattern'] = np.nan
+k = 0
+for i in pat_ke:
+    for ii in range(len(pat_ke[i])):
+        if pat_ke[i][ii][2]:
+            df['ke_ai_pattern'][k] = True
+            break
+    k += 1
+df['ke_ai_pattern'].sum() # 110, 56%
+
+pat_ke2 = all_patterns('ke2_total')
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/ke2_patterns.csv"
+pattern_csv(output_csv,pat_ke2)
+
+# All ai pattern: Tag True if ai pattern found for each fc for TOTAL
+df['ke2_ai_pattern'] = np.nan
+k = 0
+for i in pat_ke2:
+    for ii in range(len(pat_ke2[i])):
+        if pat_ke2[i][ii][2]:
+            df['ke2_ai_pattern'][k] = True
+            break
+    k += 1
+df['ke2_ai_pattern'].sum() # 14
+
+# KE with 1 and 2 grams, duplicate threshold = 0.3
+pat_ke12 = all_patterns('ke12_total')
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/ke12_patterns.csv"
+pattern_csv(output_csv,pat_ke12)
+
+df['ke12_ai_pattern'] = np.nan
+k = 0
+for i in pat_ke12:
+    for ii in range(len(pat_ke12[i])):
+        if pat_ke12[i][ii][2]:
+            df['ke12_ai_pattern'][k] = True
+            break
+    k += 1
+df['ke12_ai_pattern'].sum() # 26
