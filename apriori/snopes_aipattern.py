@@ -41,6 +41,109 @@ for i in range(len(df)):
     else:
         df['total'][i] = df['title'][i] # Only use title for ai patterns
 
+### OPENIE
+# References
+# https://github.com/knowitall/openie
+# https://github.com/philipperemy/stanford-openie-python
+# https://stanfordnlp.github.io/CoreNLP/corenlp-server.html#api-documentation
+# https://stanfordnlp.github.io/CoreNLP/download.html
+# https://github.com/smilli/py-corenlp
+
+
+# !pip install --upgrade pip
+# !pip install stanford_openie
+# !pip install graphviz
+# !pip install pycorenlp
+
+
+'''
+# Set up classpath: Only when classpath is not working.
+!export CLASSPATH="$CLASSPATH:javanlp-core.jar:stanford-corenlp-models-current.jar";
+!for file in `find lib -name "*.jar"`; do export CLASSPATH="$CLASSPATH:`realpath $file`"; done
+# Run server
+!java -mx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 15000
+# check the connection to server
+'''
+import requests
+print(requests.post('http://[::]:9000/?properties={"annotators":"tokenize,ssplit,pos","outputFormat":"json"}', data = {'data':'The quick brown fox jumped over the lazy dog.'}).text)
+
+from pycorenlp import StanfordCoreNLP
+nlp=StanfordCoreNLP("http://localhost:9000/")
+
+def openie(sen):
+    li = []
+    # s = "cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+    # s = "Some 90 pounds of cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+    s = sen
+    output = nlp.annotate(s, properties={"annotators":"tokenize,ssplit,pos,depparse,natlog,openie","outputFormat": "json","triple.strict":"true"})
+    result = [output["sentences"][0]["openie"] for item in output]
+    # print(result)
+    for i in result:
+        for rel in i:
+            relationSent=rel['subject'],rel['relation'],rel['object']
+            # print(relationSent)
+            li.append(relationSent)
+    return li
+
+df['openie'] = None
+for i in range(len(df['total'])):
+    df['openie'][i] = openie(df['total'][i])
+
+df['openie'][4]
+
+s = "cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+s = "Some 90 pounds of cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+output = nlp.annotate(s, properties={"annotators": "tokenize,ssplit,pos,depparse,natlog,openie", "outputFormat": "json","triple.strict": "true"})
+result = [output["sentences"][0]["openie"] for item in output]
+print(result)
+for i in result:
+    for rel in i:
+        relationSent = rel['subject'], rel['relation'], rel['object']
+        print(relationSent)
+
+
+'''
+if __name__ == '__main__':
+    nlp = StanfordCoreNLP('http://localhost:9000')
+    text = (
+        'Pusheen and Smitha walked along the beach. Pusheen wanted to surf,'
+        'but fell off the surfboard.')
+    output = nlp.annotate(text, properties={
+        'annotators': 'tokenize,ssplit,pos,depparse,parse',
+        'outputFormat': 'json'
+    })
+    print(output['sentences'][0]['parse'])
+    output = nlp.tokensregex(text, pattern='/Pusheen|Smitha/', filter=False)
+    print(output)
+    output = nlp.semgrex(text, pattern='{tag: VBD}', filter=False)
+    print(output)
+'''
+
+# https://stanfordnlp.github.io/CoreNLP/openie.html#api
+# Default value of openie.affinity_probability_cap was 1/3.
+properties = {
+    'openie.affinity_probability_cap': 2 / 3,
+}
+
+with StanfordOpenIE(properties=properties) as client:
+    text = 'Barack Obama was born in Hawaii. Richard Manning wrote this sentence.'
+    print('Text: %s.' % text)
+    for triple in client.annotate(text):
+        print('|-', triple)
+
+    graph_image = 'graph.png'
+    client.generate_graphviz_graph(text, graph_image)
+    print('Graph generated: %s.' % graph_image)
+
+    with open('corpus/pg6130.txt', encoding='utf8') as r:
+        corpus = r.read().replace('\n', ' ').replace('\r', '')
+
+    triples_corpus = client.annotate(corpus[0:5000])
+    print('Corpus: %s [...].' % corpus[0:80])
+    print('Found %s triples in the corpus.' % len(triples_corpus))
+    for triple in triples_corpus[:3]:
+        print('|-', triple)
+    print('[...]')
 
 ## Keyword extraction
 # YAKE: https://github.com/LIAAD/yake
@@ -771,6 +874,8 @@ for i in pat_netkclaim:
     k += 1
 
 df['ai_pattern_ent_claim'].sum() # 67, 33.8%
+
+df[df['ai_pattern_ent_claim']==True]['id'].tolist()
 # print(all_patterns3['id1'])
 # df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
 

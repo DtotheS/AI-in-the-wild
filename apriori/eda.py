@@ -488,3 +488,5 @@ for i in var_li:
     print(c.most_common(10))
     print([round(c[j[0]] / len(i) *100,1) for j in c.most_common(10)])
 
+df.columns
+df[df['ai_pattern_ent_claim']==True].groupby('legitimacy').count()
