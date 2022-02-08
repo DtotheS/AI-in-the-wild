@@ -83,15 +83,17 @@ with CoreNLPClient(
                     li.append(relationSent)
             df['openie'][i] = li
 
+
 with CoreNLPClient(
         endpoint="http://localhost:9001",
         annotators=['openie'],  # 'tokenize','ssplit','pos','lemma','ner', 'parse', 'depparse','coref',
         output_format='json',
         timeout=30000,
         memory='6G') as client:
-    # s = "cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
-    s = "Some 90 pounds of cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
-    output = client.annotate(s)
+    s = "cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+    # s = "Some 90 pounds of cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+    # s = df[df['id']==30]['total'][26]
+    output = client.annotate(s,properties={"annotators":"openie","openie.triple.strict":"true","openie.affinity_probability_cap":1/3,"openie.triple.all_nominals":"true"})
     result = [output["sentences"][0]["openie"] for item in output]
     print(result)
     for i in result:
