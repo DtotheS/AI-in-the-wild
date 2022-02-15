@@ -20,6 +20,13 @@ from nltk.stem import WordNetLemmatizer
 ogdf = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv") # fc + sources data
 fcs = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/factcheck_websites.csv") # 1203 fc data
 
+## For checking labels
+label = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/label/sian_label.csv") # sian_label
+idlist = label['id'].tolist()
+
+ogdf = ogdf[ogdf['id'].isin(idlist)]
+###
+
 ## Select ids which only have sources.
 fc = ogdf[ogdf['sourceid']==0]
 fc['sources_num'] = fc['sources_num'].astype(int)
@@ -69,46 +76,189 @@ from stanza.server import CoreNLPClient
 
 df['openie'] = None
 with CoreNLPClient(
-        annotators=['openie'], #'tokenize','ssplit','pos','lemma','ner', 'parse', 'depparse','coref',
+        annotators=['openie'], #,'tokenize','ssplit','pos','lemma','ner', 'parse', 'depparse','coref'],
         output_format='json',
         timeout=30000,
         memory='6G') as client:
     for i in range(len(df)):
         li = []
         if df['sourceid'][i] == 0:
-            ann = client.annotate(df['claim'][i])
+            ann = client.annotate(df['claim'][i],properties={"annotators":"openie","openie.triple.strict":"true","openie.affinity_probability_cap":1/3,"openie.triple.all_nominals":"true"})
             for sen in ann['sentences']:
                 for rel in sen['openie']:
                     relationSent = rel['subject'], rel['relation'], rel['object']
                     li.append(relationSent)
             df['openie'][i] = li
 
+nlp = stanza.Pipeline(lang='en', processors='tokenize,mwt,pos,lemma')
+stops = STOP_WORDS #spacy
 
-with CoreNLPClient(
-        endpoint="http://localhost:9001",
-        annotators=['openie'],  # 'tokenize','ssplit','pos','lemma','ner', 'parse', 'depparse','coref',
-        output_format='json',
-        timeout=30000,
-        memory='6G') as client:
-    s = "cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
-    # s = "Some 90 pounds of cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
-    # s = df[df['id']==30]['total'][26]
-    output = client.annotate(s,properties={"annotators":"openie","openie.triple.strict":"true","openie.affinity_probability_cap":1/3,"openie.triple.all_nominals":"true"})
-    result = [output["sentences"][0]["openie"] for item in output]
-    print(result)
-    for i in result:
-        for rel in i:
-            relationSent = rel['subject'], rel['relation'], rel['object']
-            print(relationSent)
+# doc=nlp(df['total'][36])
+# doc.sentences[0].words[0].lemma.lower().strip() not in stops and doc.sentences[0].words[0].lemma.lower().strip().isalpha()
+# test = nlp(df['openie'][0][0][0])
+# test.sentences[0].words[0].lemma
+# len(df['openie'][0][0])
 
-with open('/Users/agathos/DtotheS/AI-in-the-wild/openie.csv','w') as f:
-    header = ['id', 'subject', 'relation', 'object']
-    c = csv.writer(f)
-    c.writerow(header)  # header
-    for i in range(len(df)):
-        if df['openie'][i]:
-            for j in df['openie'][i]:
-                c.writerow([df['id'][i],j[0],j[1],j[2]])
+df['cl_openie'] = None
+for t in range(len(df)):
+    if df['sourceid'][t] == 0:
+        ka_list = []
+        kc_list = []
+        for i in range(len(df['openie'][t])): # for every triple of relation
+            ka = nlp(df['openie'][t][i][0]) # for keyword A
+            kc = nlp(df['openie'][t][i][2]) # for keyword C
+            for j in range(len(ka.sentences)):
+                for k in range(len(ka.sentences[j].words)):
+                    foo_worda = ka.sentences[j].words[k].lemma.lower().strip()  # pre-processing: tokenization, lemmatization, lower, strip, remove stop words, special character removal
+                    if foo_worda not in stops and foo_worda.isalpha():
+                        ka_list.append(str(foo_worda))
+
+            for jj in range(len(kc.sentences)):
+                for kk in range(len(kc.sentences[jj].words)):
+                    foo_wordc = kc.sentences[jj].words[kk].lemma.lower().strip()  # pre-processing: tokenization, lemmatization, lower, strip, remove stop words, special character removal
+                    if foo_wordc not in stops and foo_wordc.isalpha():
+                        kc_list.append(str(foo_wordc))
+        ka_list = list(set(ka_list))
+        kc_list = list(set(kc_list))
+        df['cl_openie'][t] = [ka_list,kc_list]
+
+    else:
+        doc = nlp(df['total'][t])
+        make_li = []
+        for j in range(len(doc.sentences)):
+            for k in range(len(doc.sentences[j].words)):
+                foo_word = doc.sentences[j].words[k].lemma.lower().strip() #pre-processing: tokenization, lemmatization, lower, strip, remove stop words, special character removal
+                if foo_word not in stops and foo_word.isalpha():
+                    make_li.append(str(foo_word))
+        df['cl_openie'][t] = make_li # do not remove duplicates
+
+
+##AI pattern finding using cl_openie
+def openie_patterns(cl_name):
+    all_patterns = {}
+    id_list = df[df['sourceid'] == 0]['id'].tolist()
+    # id_max = max(df['id'])
+    for id_num in id_list:
+        all_patterns['id%s' % id_num] = []
+        words = df[(df['id'] == id_num) & (df['sourceid'] == 0)][cl_name].reset_index(drop=True)[0]
+        words_lena = len(words[0])
+        words_lenb = len(words[1])
+        for i in range(words_lena - 1):
+            for j in range(i + 1, words_lenb):
+                all_patterns['id%s' % id_num].append(ai_pattern2(cl_name, id_num, words[0][i], words[1][j]))
+
+    return all_patterns
+
+pat_openie = openie_patterns('cl_openie')
+
+# openie pattern: Tag True if ai pattern found for each fc for TOTAL
+df['openie_pattern'] = False
+k = 0
+for i in pat_openie:
+    for ii in range(len(pat_openie[i])):
+        if pat_openie[i][ii][2]:
+            df['openie_pattern'][k] = True
+            break
+    k += 1
+df[df['sourceid']==0]['openie_pattern'].sum() # 15/35 42.9
+
+y_pred = df[df['sourceid']==0]['openie_pattern'].tolist()
+y_exist = label['aiexistence'].tolist()
+label['aifound2']=None
+for i in range(len(label)):
+    if label['aifound'][i] == "TRUE":
+        label['aifound2'][i] = True
+    else:
+        label['aifound2'][i] = False
+y_found = label['aifound2'].tolist()
+
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
+confusion_matrix(y_exist,y_pred)
+accuracye = accuracy_score(y_exist, y_pred)
+f1e = f1_score(y_exist, y_pred)
+recalle = recall_score(y_exist, y_pred)
+pree = precision_score(y_exist,y_pred)
+print("existence-label based :", accuracye, f1e, recalle, pree)
+
+confusion_matrix(y_found,y_pred)
+accuracyf = accuracy_score(y_found, y_pred)
+f1f = f1_score(y_found, y_pred)
+recallf = recall_score(y_found, y_pred)
+pref = precision_score(y_found,y_pred)
+print("found-label based :", accuracyf, f1f, recallf, pref)
+
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/openie_patterns.csv"
+def pattern_csv(path,dict):
+    header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
+    with open(path, 'w') as f:
+        c = csv.writer(f)  # write csv on f.
+        c.writerow(header)  # header
+        for key, value in dict.items():
+            for case in value:
+                li = []
+                li.extend([key, case[0], case[1], bool(case[2]), len(case[2]), " ",
+                           case[2]])  # case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
+                c.writerow(li)
+
+pattern_csv(output_csv,pat_openie)
+
+y_pred.count(True)
+y_exist.count(True)
+y_found.count(True)
+
+# lbls = list(set(df['legitimacy'].tolist()))
+# for i in lbls:
+#     print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern']))*100) + "%)")
+
+# print(all_patterns['id1'])
+# df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
+
+# Make a CSV file and List of AB & BC patterns.
+all_patterns.items()
+output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/patterns_v2.csv"
+def pattern_csv(path,dict):
+    header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
+    with open(path, 'w') as f:
+        c = csv.writer(f)  # write csv on f.
+        c.writerow(header)  # header
+        for key, value in dict.items():
+            for case in value:
+                li = []
+                li.extend([key, case[0], case[1], bool(case[2]), len(case[2]), " ",
+                           case[2]])  # case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
+                c.writerow(li)
+
+pat1 = all_patterns('cl_total')
+pattern_csv(output_csv,pat1)
+
+# df[(df['id'] == 12) & (df['sourceid'] == 0)]['cl_openie'].reset_index(drop=True)[0]
+
+
+# with CoreNLPClient(
+#         endpoint="http://localhost:9001",
+#         annotators=['openie','tokenize','ssplit','pos','lemma','ner', 'parse', 'depparse','coref'],
+#         output_format='json',
+#         timeout=30000,
+#         memory='6G') as client:
+#     # s = "cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+#     s = "Some 90 pounds of cocaine was found on a cargo ship owned by U.S. Senate Majority Leader and anti-drug politician Mitch McConnell."
+#     # s = df[df['id']==30]['total'][26]
+#     output = client.annotate(s,properties={"annotators":"openie","openie.triple.strict":"true","openie.affinity_probability_cap":1/3,"openie.triple.all_nominals":"true"}) #
+#     result = [output["sentences"][0]["openie"] for item in output]
+#     print(result)
+#     for i in result:
+#         for rel in i:
+#             relationSent = rel['subject'], rel['relation'], rel['object']
+#             print(relationSent)
+#
+# with open('/Users/agathos/DtotheS/AI-in-the-wild/openie.csv','w') as f:
+#     header = ['id', 'subject', 'relation', 'object']
+#     c = csv.writer(f)
+#     c.writerow(header)  # header
+#     for i in range(len(df)):
+#         if df['openie'][i]:
+#             for j in df['openie'][i]:
+#                 c.writerow([df['id'][i],j[0],j[1],j[2]])
 
 
 '''
@@ -138,10 +288,6 @@ def openie(sen):
             li.append(relationSent)
     return li
 '''
-
-
-
-
 
 ## Keyword extraction
 # YAKE: https://github.com/LIAAD/yake
