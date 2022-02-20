@@ -21,9 +21,8 @@ ogdf = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv") #
 fcs = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/factcheck_websites.csv") # 1203 fc data
 
 ## For checking labels
-label = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/label/sian_label.csv") # sian_label
+label = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/label/ai_label.csv") # sian_label
 idlist = label['id'].tolist()
-
 ogdf = ogdf[ogdf['id'].isin(idlist)]
 ###
 
@@ -37,6 +36,7 @@ df = ogdf[df_src]
 # df = df[df['date'] != "none"] #
 df = df.reset_index(drop=True)
 
+
 # Use title and text(claim or content)
 df['total'] = None
 df['sourceid'].astype(int)
@@ -47,6 +47,7 @@ for i in range(len(df)):
         df['total'][i] = df['claim'][i] # Claim for fact check page
     else:
         df['total'][i] = df['title'][i] # Only use title for ai patterns
+
 
 ### OPENIE
 # References
@@ -132,6 +133,40 @@ for t in range(len(df)):
                     make_li.append(str(foo_word))
         df['cl_openie'][t] = make_li # do not remove duplicates
 
+#ai pattern finding algorithm.
+def ai_pattern2(c_name,id,key1,key2):
+    i = id
+    k1_idx = [] # index contains keyword 1
+    k2_idx = [] # index contains keyword 2
+    k1 = key1
+    k2 = key2
+    #############################################################################
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==1).
+        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
+            foo1 = df[(df['id']==i)&(df['sourceid']==j)][c_name].index[0] #index for id=i & sourceid=j
+            if k1 in df[(df['id']==i)&(df['sourceid']==j)][c_name][foo1]:
+                k1_idx.append(foo1)
+    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==2).
+        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
+            foo2 = df[(df['id'] == i) & (df['sourceid'] == j)][c_name].index[0]  # index for id=i & sourceid=j
+            if k2 in df[(df['id']==i)&(df['sourceid']==j)][c_name][foo2]:
+                k2_idx.append(foo2)
+    # 3. association
+    li_commonkeys = []
+    for k1j in k1_idx:
+        for k2j in k2_idx:
+            if k1j != k2j:
+                set1 = set(df[c_name][k1j])
+                set2 = set(df[c_name][k2j])
+                inter = set1.intersection(set2)
+                inter.discard(k1) # remove keyword A form candidates of B
+                inter.discard(k2) # remove keyword C form candidates of B
+                inter_list = list(inter)
+                li_commonkeys.extend(inter_list)
+    x = Counter(li_commonkeys)
+    ordered_x = x.most_common()
+    return (k1,k2,ordered_x)
+
 
 ##AI pattern finding using cl_openie
 def openie_patterns(cl_name):
@@ -145,7 +180,8 @@ def openie_patterns(cl_name):
         words_lenb = len(words[1])
         for i in range(words_lena - 1):
             for j in range(i + 1, words_lenb):
-                all_patterns['id%s' % id_num].append(ai_pattern2(cl_name, id_num, words[0][i], words[1][j]))
+                if words[0][i] != words[1][j]:
+                    all_patterns['id%s' % id_num].append(ai_pattern2(cl_name, id_num, words[0][i], words[1][j]))
 
     return all_patterns
 
@@ -160,17 +196,12 @@ for i in pat_openie:
             df['openie_pattern'][k] = True
             break
     k += 1
-df[df['sourceid']==0]['openie_pattern'].sum() # 15/35 42.9
-
+df[df['sourceid']==0]['openie_pattern'].sum() # 13/24 54.17%
+label.columns
 y_pred = df[df['sourceid']==0]['openie_pattern'].tolist()
-y_exist = label['aiexistence'].tolist()
-label['aifound2']=None
-for i in range(len(label)):
-    if label['aifound'][i] == "TRUE":
-        label['aifound2'][i] = True
-    else:
-        label['aifound2'][i] = False
-y_found = label['aifound2'].tolist()
+y_exist = label['label_existence'].tolist()
+y_found = label['label_found'].tolist()
+
 
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
 confusion_matrix(y_exist,y_pred)
@@ -187,6 +218,7 @@ recallf = recall_score(y_found, y_pred)
 pref = precision_score(y_found,y_pred)
 print("found-label based :", accuracyf, f1f, recallf, pref)
 
+# Make a CSV file and List of AB & BC patterns.
 output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/openie_patterns.csv"
 def pattern_csv(path,dict):
     header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
@@ -213,25 +245,6 @@ y_found.count(True)
 # print(all_patterns['id1'])
 # df[(df['id']==3)&(df['sourceid']==1)]['cl_total'].reset_index(drop=True)[0]
 
-# Make a CSV file and List of AB & BC patterns.
-all_patterns.items()
-output_csv = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/patterns_v2.csv"
-def pattern_csv(path,dict):
-    header = ['id','keyword A','keyword C','exist_B','num_B','keywords B']
-    with open(path, 'w') as f:
-        c = csv.writer(f)  # write csv on f.
-        c.writerow(header)  # header
-        for key, value in dict.items():
-            for case in value:
-                li = []
-                li.extend([key, case[0], case[1], bool(case[2]), len(case[2]), " ",
-                           case[2]])  # case[0]=A , case[1]=C, case[2] = Bs, bool(li) False if empty
-                c.writerow(li)
-
-pat1 = all_patterns('cl_total')
-pattern_csv(output_csv,pat1)
-
-# df[(df['id'] == 12) & (df['sourceid'] == 0)]['cl_openie'].reset_index(drop=True)[0]
 
 
 # with CoreNLPClient(
@@ -687,38 +700,6 @@ def ai_pattern_ent_claim(id,key1,key2):
     return (k1,k2,ordered_x)
 '''
 
-def ai_pattern2(c_name,id,key1,key2):
-    i = id
-    k1_idx = [] # index contains keyword 1
-    k2_idx = [] # index contains keyword 2
-    k1 = key1
-    k2 = key2
-    #############################################################################
-    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==1).
-        if df[(df['id']==i)&(df['sourceid']==j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid']==0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news/need to reset_index to change series into datetime and compared the dates.
-            foo1 = df[(df['id']==i)&(df['sourceid']==j)][c_name].index[0] #index for id=i & sourceid=j
-            if k1 in df[(df['id']==i)&(df['sourceid']==j)][c_name][foo1]:
-                k1_idx.append(foo1)
-    for j in range(1,len(df[df['id']==i])): # not include fake news, but from the first source (sourceid ==2).
-        if df[(df['id']==i)&(df['sourceid'] == j)]['datetime'].reset_index(drop=True)[0] <= df[(df['id']==i)&(df['sourceid'] == 0)]['datetime'].reset_index(drop=True)[0]: #datetime of source j <= datetime of the fake news
-            foo2 = df[(df['id'] == i) & (df['sourceid'] == j)][c_name].index[0]  # index for id=i & sourceid=j
-            if k2 in df[(df['id']==i)&(df['sourceid']==j)][c_name][foo2]:
-                k2_idx.append(foo2)
-    # 3. association
-    li_commonkeys = []
-    for k1j in k1_idx:
-        for k2j in k2_idx:
-            if k1j != k2j:
-                set1 = set(df[c_name][k1j])
-                set2 = set(df[c_name][k2j])
-                inter = set1.intersection(set2)
-                inter.discard(k1) # remove keyword A form candidates of B
-                inter.discard(k2) # remove keyword C form candidates of B
-                inter_list = list(inter)
-                li_commonkeys.extend(inter_list)
-    x = Counter(li_commonkeys)
-    ordered_x = x.most_common()
-    return (k1,k2,ordered_x)
 
 '''
 # Check sources date which are late then article publsihed date.
