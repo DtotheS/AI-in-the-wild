@@ -6,12 +6,12 @@ from dateparser.search import search_dates
 from datetime import datetime as dt
 import csv
 
-data = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv",on_bad_lines='skip')
+data = pd.read_csv("/AI-in-the-wild/apriori/fc_src.csv", on_bad_lines='skip')
 maxid = int(max(data['id']))
 
 # data.columns
 # srcdf = pd.DataFrame(columns=['id','sourceid','source_num','category','type','legitimacy','source_name','url','title','date','text'])
-with open(r"/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv",'a',encoding="utf-8") as f:
+with open(r"/AI-in-the-wild/apriori/fc_src.csv", 'a', encoding="utf-8") as f:
     c = csv.writer(f) # write csv on f.
     c.writerow("\n")
     for i in range(maxid):

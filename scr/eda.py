@@ -4,19 +4,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
 
-src = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/fc_src.csv") # fc + sources data
-fc = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/apriori/factcheck_websites.csv") # 1203 fc data
+src = pd.read_csv("/AI-in-the-wild/apriori/fc_src.csv") # fc + sources data
+fc = pd.read_csv("/AI-in-the-wild/apriori/factcheck_websites.csv") # 1203 fc data
 ### Load df which include delta_dt (time gap days), ai_pattern (all ai), ai_pattern_ent (NE ai)
-df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl') # contains only 198 fc and their sources
+# df = pd.read_pickle('/Users/agathos/DtotheS/AI-in-the-wild/apriori/df3.pkl') # contains only 198 fc and their sources
+df = pd.read_pickle('/AI-in-the-wild/apriori/df_openie.pkl') # containse 198 fc & sources for opneie pattern finding
 # df['rating'] match id and its rating for all sources.
 df['rating'] = np.nan
 for i in range(len(df)):
     df['rating'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['legitimacy'].reset_index(drop=True)[0]
 
 # assign T/F for sources if there is ai pattern for its fact check.
-df['src_ai_pattern'] = np.nan
+df['src_openie_pattern'] = np.nan
 for i in range(len(df)):
-    df['src_ai_pattern'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['ai_pattern'].reset_index(drop=True)[0]
+    df['src_openie_pattern'][i] = df.loc[(df['sourceid']==0)&(df['id'] == df['id'][i])]['openie_pattern'].reset_index(drop=True)[0]
 
 
 len(src) # Total = 2271
@@ -207,6 +208,11 @@ df[df['sourceid']==0]['ai_pattern'].sum() / len(df[df['sourceid']==0])# among 19
 df['ai_pattern_ent_claim'].sum()
 df[df['sourceid']==0]['ai_pattern_ent_claim'].sum() / len(df[df['sourceid']==0])# among 198, only 67 have ne ai pattern.
 
+# OpenIE to claim: 29.3%
+df['openie_pattern'].sum()
+df[df['sourceid']==0]['openie_pattern'].sum() / len(df[df['sourceid']==0])# among 198, 58 have ai pattern.
+
+
 ## Find percentage of existence of ai pattern for each label.
 # All AI pattern
 lbls = list(set(df['legitimacy'].tolist()))
@@ -218,7 +224,12 @@ lbls = list(set(df['legitimacy'].tolist()))
 for i in lbls:
     print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim'])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['ai_pattern_ent_claim']))*100) + "%)")
 
+lbls = list(set(df['legitimacy'].tolist()))
+for i in lbls:
+    print(str(i)+": " + str(len(df[(df['sourceid']==0)&(df['legitimacy']==i)&(df['openie_pattern']==True)])) + " vs." + str(df[(df['sourceid']==0)&(df['legitimacy']==i)]['openie_pattern'].count()) + " ("+ str((df[(df['sourceid']==0)&(df['legitimacy']==i)&(df['openie_pattern']==True)]['openie_pattern'].count()/len(df[(df['sourceid']==0)&(df['legitimacy']==i)]['openie_pattern']))*100) + "%)")
 
+len(df[(df['sourceid']==0)&(df['legitimacy']==i)&(df['openie_pattern']==True)])
+df[(df['sourceid']==0)&(df['legitimacy']==i)&(df['openie_pattern']==True)]['openie_pattern'].count()
 ### EDA for Time Gap (days)
 '''
 ### df2 pikle already done.
@@ -482,6 +493,66 @@ from collections import Counter
 # c.most_common(10)[2][1]
 # len(all_b)
 var_li = [all_b,claim_b,all_b_real,claim_b_real,all_b_fake,claim_b_fake,]
+for i in var_li:
+    print(len(i))
+    c=Counter(i)
+    print(c.most_common(10))
+    print([round(c[j[0]] / len(i) *100,1) for j in c.most_common(10)])
+
+df.columns
+df[df['ai_pattern_ent_claim']==True].groupby('legitimacy').count()
+
+### Common B words: OpenIE
+
+claim_b = []
+for i in range(len(df[df['sourceid']==0])):
+    claim_b.extend(df['openie_bwords'][i])
+
+claim_b_fake = []
+for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))])):
+    claim_b_fake.extend(df['openie_bwords'][i])
+
+claim_b_real = []
+for i in range(len(df[(df['sourceid']==0)&(df['legitimacy'].isin(['TRUE','Mostly True']))])):
+    claim_b_real.extend(df['openie_bwords'][i])
+# df[(df['sourceid']==0)&(df['legitimacy'].isin(['FALSE','Mostly False']))]
+
+# wlist = all_patterns4_words['id2']
+def fig_b(word_list,file_name):
+    import matplotlib.pyplot as plt
+    from wordcloud import WordCloud
+    # convert list to string and generate
+    unique_string = (" ").join(word_list)
+    wordcloud = WordCloud(width=800, height=800,
+                          background_color='white', min_font_size=15, collocations=False).generate(unique_string)
+    plt.figure(figsize=(15, 8))
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/apriori/img/%s.png' % (file_name), dpi=600, bbox_inches='tight')
+    plt.show()
+    plt.close()
+
+fig_b(claim_b_fake,'bs_openie_fake')
+
+
+'''
+all_patterns4_words.items()
+# Make a CSV file and List of AB & BC patterns.
+output_csv4 = "/Users/agathos/DtotheS/AI-in-the-wild/apriori/words.csv"
+all_patterns4_words.items()
+header = ['id','keywords B']
+with open(output_csv4,'w') as f:
+    c = csv.writer(f) # write csv on f.
+    c.writerow(header) # header
+    for key, value in all_patterns4_words.items():
+        c.writerow([key,value])
+'''
+
+from collections import Counter
+# c = Counter(all_b)
+# c.most_common(10)[2][1]
+# len(all_b)
+var_li = [claim_b,claim_b_real,claim_b_fake]
 for i in var_li:
     print(len(i))
     c=Counter(i)
