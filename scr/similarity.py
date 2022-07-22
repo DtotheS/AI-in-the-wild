@@ -1,5 +1,9 @@
 # Reference: https://newscatcherapi.com/blog/ultimate-guide-to-text-similarity-with-python
 
+# !pip install -U pip setuptools wheel
+# !pip install -U 'spacy[apple]'
+# !python -m spacy download en_core_web_trf
+
 from zipfile import ZipFile
 import pandas as pd
 import os
@@ -75,7 +79,7 @@ for i in murky.FCurl.values:
         print(i)
 '''
 
-
+'''
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -86,14 +90,16 @@ def create_heatmap(similarity,labels_ind,labels_col, cmap="YlGnBu"):
     df.index = labels_ind
     fig, ax = plt.subplots(figsize=(5, 5))
     sns.heatmap(df, cmap=cmap)
+'''
 
 '''Word Embeddings'''
+'''
 # sklearn one-hot-encoding = bag-of-words = sklearn CountVectorizer()
 vectorizer = CountVectorizer(lowercase=True, stop_words='english')
 X = vectorizer.fit_transform(statements)
 arr = X.toarray()
 vectorizer.get_feature_names_out() # words
-
+'''
 # TF-IDF
 ## TF-IDF vectors are an extension of the one-hot encoding model. Instead of considering the frequency of words in one document, the frequency of words across the whole corpus is taken into account. The big idea is that words that occur a lot everywhere carry very little meaning or significance. For instance, trivial words like “and”, “or”, “is” don’t carry as much significance as nouns and proper nouns that occur less frequently.
 ## Mathematically, Term Frequency (TF) is the number of times a word appears in a document divided by the total number of words in the document. And Inverse Document Frequency (IDF) = log(N/n)
@@ -105,19 +111,57 @@ vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(statements)
 arr = X.toarray()
 
-# labels = [headline[:20] for headline in statements]
-labels = pf.id.to_list() + fc.id.to_list()
-# len(labels) == len(pf) + len(fc)
-
-pflist = labels[:1178]
-fclist = labels[1178:]
-len(pflist) == len(pf)
-len(fclist) == len(fc)
+len(pf) #1178
 pfarr = arr[:1178]
 fcarr = arr[1178:]
 
 # create_heatmap(cosine_similarity(pfarr,fcarr),pflist,fclist)
 # plt.show()
+
+
+''' Word2Vec: Works very poor
+import spacy
+# !python -m spacy download en_core_web_md
+# !python -m spacy download en_core_web_lg
+# !python -m spacy download en_vectors_web_md
+# !python -m spacy download en_core_web_trf
+nlp = spacy.load('en_core_web_lg')
+docs = [nlp(statement) for statement in statements]
+pfarr = [sent.vector for sent in docs[:1178]]
+fcarr = [sent.vector for sent in docs[1178:]]
+
+similarity = []
+for i in range(1178):
+    row = []
+    for j in range(1178,1503):
+        row.append(docs[i].similarity(docs[j]))
+    similarity.append(row)
+similarity = np.array(similarity)
+
+# label: overlap
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_recall_fscore_support
+
+xs = np.arange(0,1,0.05)
+pf_true = [bool(ele) for ele in pf['overlap'].values]
+fc_true = [bool(ele) for ele in fc['overlap'].values]
+pf_f1 = []
+fc_f1 = []
+for x in xs:
+    pf_y = [any(y > x for y in tf) for tf in similarity]
+    fc_y = [any(y > x for y in tf) for tf in similarity.T]
+    pf_e = precision_recall_fscore_support(pf_true, pf_y, average='binary')
+    fc_e = precision_recall_fscore_support(fc_true, fc_y, average='binary')
+    pf_f1.append(pf_e[2]) # compare f1 score
+    fc_f1.append(fc_e[2]) # compare f1 score
+
+import matplotlib.pyplot as plt
+plt.plot(xs,pf_f1,label = "politifact")
+plt.plot(xs,fc_f1,label = "Washington Post")
+plt.legend()
+plt.show()
+'''
+
 
 ''' Evaluation'''
 from sklearn.metrics import confusion_matrix
@@ -146,7 +190,8 @@ plt.show()
 
 np.argmax(pf_f1) # x=0.5
 np.argmax(fc_f1) # x=0.4
-# xs[8]
+xs[np.argmax(pf_f1)]
+xs[np.argmax(fc_f1)]
 
 ## Confusion Matrix for Politifact max point
 x = 0.50 # similarity criterion
