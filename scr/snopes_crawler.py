@@ -1,6 +1,7 @@
 ## Set up
 # !brew install chromedriver
 # !conda install selenium
+# !pip install beautifulsoup4
 
 ## Modules
 from selenium import webdriver
@@ -280,15 +281,15 @@ options.add_argument("--disable-notifications")
 # driver = webdriver.Chrome('chromedriver',options=options)
 driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
 
+'''
+# For testing some key factors.
 driver.get("https://www.snopes.com/fact-check/celebrate-doughnut-day/")
 smg = driver.execute_script('return smg')
-smg
-
 long = driver.find_element_by_class_name("rich-text p").text
 claim = driver.find_element_by_class_name("rich-text p").text
 rating = driver.find_element_by_class_name("copyright_text_color #FF0000").text
-
 driver.find_element_by_xpath("//font[@face='Arial']").text
+'''
 
 '''
 driver.get("https://www.snopes.com/fact-check/ca-gop-ballot-drop-boxes/")
@@ -307,7 +308,7 @@ dates[1].get_attribute("datetime")
 start_link = 'https://www.snopes.com/fact-check/category/politics/'
 urls = get_urls(start_link,100) # start_link and number of pages you want to collect.
 
-# Save urls into csv file.
+# You can save urls for future. Save urls into csv file.
 import csv
 header_url = ['id','url']
 i = 0
@@ -330,7 +331,7 @@ for i in range(1300//100):
     print(f"{e}" + "at: ", time.localtime())
     s += 100
     e += 100
-    time.sleep(600)
+    time.sleep(600) # Snopes.com does not allow collect bunch of data at a time, so I gave 10 minutes sleep for every 100 urls.
 driver.close()
 
 # Check duplicates: duplicates, which is page error on their side. e.g.(morsi-you-in-court) https://www.snopes.com/fact-check/page/1078/
@@ -341,7 +342,7 @@ for ele in urls_f:
 urls_set = [i for n,i in enumerate(urls_f) if i not in urls_f[:n]]
 len(urls_f) - len(urls_set)
 
-# Save urls into csv file.
+# You can save the collected urs for future as csv file.
 import csv
 header_url = ['id','url']
 i = 0
@@ -353,16 +354,29 @@ with open("./AI-in-the-wild/data/urls_053022.csv","w") as f:
         foo2 = [i,ele]
         write.writerow(foo2) # need to make a list. Otherwise, each character will be save into each column.
 
-urls_set.index("https://wwwsnopes.com/fact-check/prince-philip-prank-queen/")
-urls_set[1488]
-## Read urls from csv file.
-# import pandas as pd
-# df = pd.read_csv("./AI-in-the-wild/apriori/1218_100pgs.csv") #100 urls + 3 cases of our stimuli (another 1 is from politifacts)
-# urls = df['url'].values.tolist()
+# urls_set.index("https://wwwsnopes.com/fact-check/prince-philip-prank-queen/")
+# urls_set[1488]
+
+# Read urls from csv file.
+import pandas as pd
+df = pd.read_csv("./AI-in-the-wild/apriori/1218_100pgs.csv") #100 urls + 3 cases of our stimuli (another 1 is from politifacts)
+urls = df['url'].values.tolist()
 
 # Collect Data from each fact-check webpage and write in CSV. #start from 11702
 from os.path import exists
 import pandas as pd
+
+### Start to Collect Data
+options = webdriver.ChromeOptions()
+options.add_argument('--headless') # A Headless browser runs in the background. You will not see the browser GUI or the operations been operated on it.
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument("--disable-popup-blocking")
+options.add_argument("--disable-notifications")
+
+# driver = webdriver.Chrome('chromedriver',options=options)
+driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
+
 header = ['id','title','url','claim','rating','content_owner','author_name','date_published','date_updated','primary_category','tags','sourceid','sources_num','sources','bodyt','page_type']
 collect_csv = "/Users/agathos/DtotheS/AI-in-the-wild/data/fcs_053022.csv"
 if exists(collect_csv) == False:

@@ -78,9 +78,7 @@ for i in murky.FCurl.values:
 
 import seaborn as sns
 import matplotlib.pyplot as plt
-# labels = [headline[:20] for headline in statements]
-labels = pf.id.to_list() + fc.id.to_list()
-# len(labels) == len(pf) + len(fc)
+
 
 def create_heatmap(similarity,labels_ind,labels_col, cmap="YlGnBu"):
     df = pd.DataFrame(similarity)
@@ -107,6 +105,10 @@ vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(statements)
 arr = X.toarray()
 
+# labels = [headline[:20] for headline in statements]
+labels = pf.id.to_list() + fc.id.to_list()
+# len(labels) == len(pf) + len(fc)
+
 pflist = labels[:1178]
 fclist = labels[1178:]
 len(pflist) == len(pf)
@@ -122,6 +124,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
 tfidf_sim = cosine_similarity(pfarr,fcarr) # sklearn pairwise cosine similarity
 xs = np.arange(0,1,0.05)
+
+# label: overlap
 pf_true = [bool(ele) for ele in pf['overlap'].values]
 fc_true = [bool(ele) for ele in fc['overlap'].values]
 pf_f1 = []
@@ -172,6 +176,69 @@ x = 0.40 # similarity criterion
 fc_y = [any(y>x for y in tf) for tf in tfidf_sim.T]
 conf_matrix = confusion_matrix(fc_true,fc_y)
 precision_recall_fscore_support(fc_true,fc_y, average='binary')
+
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=(5, 5))
+ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+for i in range(conf_matrix.shape[0]):
+    for j in range(conf_matrix.shape[1]):
+        ax.text(x=j, y=i, s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+plt.xlabel('Predictions', fontsize=18)
+plt.ylabel('Actuals', fontsize=18)
+plt.title('Confusion Matrix', fontsize=18)
+plt.show()
+
+# label: overlap + murky
+pf_true_om = [bool(ele) for ele in pf['overmurky'].values]
+fc_true_om = [bool(ele) for ele in fc['overmurky'].values]
+pf_f1_om = []
+fc_f1_om = []
+for x in xs:
+    pf_y = [any(y > x for y in tf) for tf in tfidf_sim]
+    fc_y = [any(y > x for y in tf) for tf in tfidf_sim.T]
+    pf_e = precision_recall_fscore_support(pf_true_om, pf_y, average='binary')
+    fc_e = precision_recall_fscore_support(fc_true_om, fc_y, average='binary')
+    pf_f1_om.append(pf_e[2]) # compare f1 score
+    fc_f1_om.append(fc_e[2]) # compare f1 score
+
+import matplotlib.pyplot as plt
+plt.plot(xs,pf_f1_om,label = "politifact")
+plt.plot(xs,fc_f1_om,label = "Washington Post")
+plt.legend()
+plt.show()
+
+np.argmax(pf_f1_om) # x=0.4
+np.argmax(fc_f1_om) # x=0.35
+xs[8]
+
+## Confusion Matrix for Politifact max point
+x = 0.40 # similarity criterion
+pf_y = [any(y>x for y in tf) for tf in tfidf_sim]
+# pf_y.index(True) # Note: The index() method only returns the first occurrence of the matching element.
+# for i in range(len(pf_y)):
+#     if pf_y[i] == True:
+#         print(i)
+# sum(pf_y)
+conf_matrix = confusion_matrix(pf_true_om,pf_y)
+precision_recall_fscore_support(pf_true_om,pf_y, average='binary')
+
+# Print the confusion matrix using Matplotlib: Politifact
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=(5, 5))
+ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+for i in range(conf_matrix.shape[0]):
+    for j in range(conf_matrix.shape[1]):
+        ax.text(x=j, y=i, s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+plt.xlabel('Predictions', fontsize=18)
+plt.ylabel('Actuals', fontsize=18)
+plt.title('Confusion Matrix', fontsize=18)
+plt.show()
+
+# Print the confusion matrix using Matplotlib: Factchecker
+x = 0.35 # similarity criterion
+fc_y = [any(y>x for y in tf) for tf in tfidf_sim.T]
+conf_matrix = confusion_matrix(fc_true_om,fc_y)
+precision_recall_fscore_support(fc_true_om,fc_y, average='binary')
 
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots(figsize=(5, 5))
