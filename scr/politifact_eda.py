@@ -7,7 +7,7 @@ from datetime import datetime as dt
 import csv
 
 os.getcwd()
-df = pd.read_csv("./ai-in-the-wild/data/politifact_v3_072122.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v3_072122.csv")
 len(df) # Total 21262
 df = df.rename(columns={df.columns[0]: "id" })
 df['id']
@@ -27,6 +27,7 @@ df['fc_day'].isnull().sum()
 
 df = df[df['fc_year'].between(2016,2021)] # Select FCs published between 2016 and 2021
 len(df) # total # FCs: 9534
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv",index=False)
 
 years_li=list(set(df['fc_year']))
 years_li = [int(x) for x in years_li]
