@@ -5,7 +5,7 @@ import numpy as np
 from datetime import datetime as dt
 import csv
 os.getcwd()
-df = pd.read_csv("./ai-in-the-wild/data/fcs_16to21.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/fcs_16to21.csv")
 df.columns
 len(df) # Total 11073
 
@@ -28,6 +28,7 @@ df['monthp'].isnull().sum()
 
 df = df[df['yearp'].between(2016,2021)] # Select FCs published between 2016 and 2021
 len(df) # total # FCs: 10679
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_16to21.csv",index=False)
 
 years_li=list(set(df['yearp']))
 years_li = [int(x) for x in years_li]

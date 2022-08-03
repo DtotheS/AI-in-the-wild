@@ -25,6 +25,7 @@ df['fc_year'].isnull().sum()
 df['fc_month'].isnull().sum()
 df['fc_day'].isnull().sum()
 
+len(df)
 df = df[df['fc_year'].between(2016,2021)] # Select FCs published between 2016 and 2021
 len(df) # total # FCs: 9534
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv",index=False)
