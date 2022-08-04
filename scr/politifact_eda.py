@@ -6,30 +6,7 @@ import numpy as np
 from datetime import datetime as dt
 import csv
 
-os.getcwd()
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v3_072122.csv")
-len(df) # Total 21262
-df = df.rename(columns={df.columns[0]: "id" })
-df['id']
-df.columns
-df.isnull().sum()
-
-df['fc_date']=pd.to_datetime(df['fc_date'])
-df['cdate']=pd.to_datetime(df['cdate'])
-
-df['fc_year'] = df.apply(lambda row : row['fc_date'].year, axis=1)
-df['fc_month'] = df.apply(lambda row : row['fc_date'].month, axis=1)
-df['fc_day'] = df.apply(lambda row : row['fc_date'].day, axis=1)
-
-df['fc_year'].isnull().sum()
-df['fc_month'].isnull().sum()
-df['fc_day'].isnull().sum()
-
-len(df)
-df = df[df['fc_year'].between(2016,2021)] # Select FCs published between 2016 and 2021
-len(df) # total # FCs: 9534
-df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv",index=False)
-
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv")
 years_li=list(set(df['fc_year']))
 years_li = [int(x) for x in years_li]
 years_li.sort()
