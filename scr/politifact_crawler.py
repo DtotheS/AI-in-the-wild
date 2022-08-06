@@ -176,12 +176,11 @@ len(df) # total # FCs: 9534
 # df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv",index=False)
 
 ##################### Crawl FC article body contents ##########################
-driver.close()
-
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv4_16to21.csv")
 df[['title','tags','summary','bodyt','sources_num','sources']] = None
-for i in range(len(df)):
-    driver.implicitly_wait(10)
+# df['sources_num'][2414]
+for i in range(2414,len(df)):
+    # driver.implicitly_wait(10)
     url = df['link'][i]
     driver.get(url)
 
@@ -213,7 +212,7 @@ for i in range(len(df)):
     try:
         # sources = driver.find_element_by_class_name("m-superbox__content").text.split("\n")
         sources = driver.find_element_by_class_name("m-superbox__content").text
-        sources = list(filter(bool, sources.splitlines())) # this additional step will solve "\n\n" issue.
+        sources = list(filter(bool, sources.strip().splitlines())) # this additional step will solve "\n\n" issue.
         sources = [x.strip() for x in sources]
         df['sources'][i] = sources
     except:
@@ -224,5 +223,8 @@ for i in range(len(df)):
         df['sources_num'][i] = snum
     except:
         pass
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv5_16to21.csv",index=False)
 
-df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv4_16to21.csv",index=False)
+df2 = df.copy()
+
+
