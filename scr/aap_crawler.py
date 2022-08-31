@@ -101,3 +101,26 @@ df['author'] = authors
 df['fc_date'] = fc_dates
 
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_083022.csv", index=False)
+
+
+######################## Select only 2019 ~ 2021 years' data #######################
+import os
+os.getcwd()
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_083022.csv")
+len(df) # Total 841
+df.columns
+df.isnull().sum()
+
+df['fc_date']=pd.to_datetime(df['fc_date'])
+df['fc_year'] = df.apply(lambda row : row['fc_date'].year, axis=1)
+df['fc_month'] = df.apply(lambda row : row['fc_date'].month, axis=1)
+df['fc_day'] = df.apply(lambda row : row['fc_date'].day, axis=1)
+
+df['fc_year'].isnull().sum()
+df['fc_month'].isnull().sum()
+df['fc_day'].isnull().sum()
+
+len(df)
+df = df[df['fc_year'].between(2019,2021)] # Select FCs published between 2019 and 2021
+len(df) # total # FCs: 612
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_083022_19_21.csv",index=False)

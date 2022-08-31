@@ -10,7 +10,7 @@ os.getcwd()
 os.chdir("/Users/agathos/DtotheS/AI-in-the-wild/scr")
 
 pf = pd.read_csv("../data/pfv3_16to21.csv")
-sn = pd.read_csv("../data/fcs_16to21.csv")
+sn = pd.read_csv("../data/fcs_16to21.csv") # need to be fixed to sn_16to21
 
 len(pf) # 9534
 len(sn) # 11073
