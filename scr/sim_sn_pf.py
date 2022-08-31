@@ -10,7 +10,7 @@ import csv
 
 os.getcwd()
 sn = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_16to21.csv")
-pf = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv")
+pf = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv5_16to21.csv")
 pf['content_owner'] = "Politifact"
 
 len(sn) # 10679
@@ -150,4 +150,5 @@ for i in range(len(simdf)):
 
 simdf['rv_dif'].sum() #59
 
-simdf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_pf_sim_result.csv",index=False)
+# simdf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_pf_sim_result.csv",index=False)
+

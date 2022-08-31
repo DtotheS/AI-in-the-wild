@@ -172,14 +172,20 @@ df['fc_day'].isnull().sum()
 
 len(df)
 df = df[df['fc_year'].between(2016,2021)] # Select FCs published between 2016 and 2021
+# df = df[df['fc_year']==2022] # Select 2022
 len(df) # total # FCs: 9534
 # df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv",index=False)
+# df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf2022.csv",index=False)
 
 ##################### Crawl FC article body contents ##########################
 df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv4_16to21.csv")
+# df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf2022.csv")
+# df = df[df['rating'].isin(['barely-true', 'false','pants-fire'])]
+# df = df.reset_index(drop=True)
+
 df[['title','tags','summary','bodyt','sources_num','sources']] = None
-# df['sources_num'][2414]
-for i in range(2414,len(df)):
+
+for i in range(len(df)):
     # driver.implicitly_wait(10)
     url = df['link'][i]
     driver.get(url)
@@ -225,6 +231,18 @@ for i in range(2414,len(df)):
         pass
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv5_16to21.csv",index=False)
 
-df2 = df.copy()
+'''
+tag_li = df['tags'].tolist()
+tags = [x.strip() for clist in tag_li for x in clist]
+tag_li = set(tags)
 
+"GUNS" in tag_li
+"ECONOMY" in tag_li
+"ABORTION" in tag_li
 
+df['contain'] = None
+for i in range(len(df)):
+    df['contain'][i] = any(ele in df['tags'][i] for ele in ["ABORTION","ECONOMY","GUNS"])
+
+df[df['contain']].to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/fakenews_cbv2.csv",index=False)   
+'''

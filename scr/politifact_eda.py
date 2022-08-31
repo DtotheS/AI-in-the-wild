@@ -6,7 +6,7 @@ import numpy as np
 from datetime import datetime as dt
 import csv
 
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv5_16to21.csv")
 years_li=list(set(df['fc_year']))
 years_li = [int(x) for x in years_li]
 years_li.sort()
@@ -245,3 +245,73 @@ plt.ylabel("Frequency (total # FCs = %s)" %len(df))
 plt.legend()
 plt.show()
 plt.close()
+
+import ast
+for i in range(len(df)):
+    x = df['tags'][i]
+    x = ast.literal_eval(x)  # list of sources
+    x = [n.strip() for n in x]
+    df['tags'][i] = x
+
+tag_li = df['tags'].tolist()
+
+from collections import Counter
+tags = Counter(t for clist in tag_li for t in clist)
+top20 = tags.most_common(20)
+sum(tags.values()) / len(df) # 36612 tags from 9534: 3.84 tags
+
+# Top 20 Tags
+x = []
+y = []
+for i in range(len(top20)):
+    x.append(top20[i][0])
+    y.append(top20[i][1])
+plt.bar(x,y)
+plt.xticks(np.arange(len(x)), x, rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.show()
+
+## Modules
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Start to Collect Data
+'''
+options = webdriver.ChromeOptions()
+options.add_argument('--headless') # A Headless browser runs in the background. You will not see the browser GUI or the operations been operated on it.
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument("--disable-popup-blocking")
+options.add_argument("--disable-notifications")
+
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+driver.get("https://www.politifact.com/")
+len(driver.find_elements_by_css_selector("ul.m-togglist__list")[0].find_elements_by_tag_name("a"))
+
+issues = []
+driver.get("https://www.politifact.com/issues/")
+for i in range(len(driver.find_elements_by_class_name("c-chyron__value"))):
+    iss = driver.find_elements_by_class_name("c-chyron__value")[i].text
+    issues.append(iss)
+
+
+persons = []
+driver.get("https://www.politifact.com/personalities/")
+for i in range(len(driver.find_elements_by_class_name("c-chyron__value"))):
+    pers = driver.find_elements_by_class_name("c-chyron__value")[i].text
+    persons.append(pers)
+
+
+import pickle
+with open("/Users/agathos/DtotheS/AI-in-the-wild/data/pf_persons", "wb") as ff:
+    pickle.dump(persons, ff)
+with open("/Users/agathos/DtotheS/AI-in-the-wild/data/pf_issues", "wb") as ff:
+    pickle.dump(issues, ff)
+'''
+import pickle
+with open("/Users/agathos/DtotheS/AI-in-the-wild/data/pf_persons", "rb") as ff:   # Unpickling
+    persons = pickle.load(ff)
+
+with open("/Users/agathos/DtotheS/AI-in-the-wild/data/pf_issues", "rb") as ff:   # Unpickling
+    issues = pickle.load(ff)
