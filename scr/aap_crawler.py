@@ -311,11 +311,38 @@ df['fc_month'].isnull().sum()
 df['fc_day'].isnull().sum()
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_090122.csv",index=False)
 
+'''
 ######################## Select only 2019 ~ 2021 years' data #######################
 len(df)
 df = df[df['fc_year'].between(2019,2021)] # Select FCs published between 2019 and 2021
 len(df) # total # FCs: 612
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_083022_19_21.csv",index=False)
 df.columns
+'''
+
+##################### author, body crawl #################
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_090122.csv")
+df[['author','body']] = None
+for i in range(len(df)):
+    driver.get(df['link'][i])
+    try:
+        at = driver.find_element_by_class_name("info").find_elements_by_tag_name("span")[0].text
+        df['author'][i] = at
+        print(at)
+    except:
+        pass
+
+    try:
+        bd = driver.find_element_by_class_name("c-article__content").text
+        df['body'] = bd
+        print(bd[:10])
+    except:
+        pass
+    print(str(i)+" "+df['link'][i] + " done")
 
 
+# df[df['author']==''] # 1 author is missing
+# df['author'][748] = None
+# df.isnull().sum()
+
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/aap_090122.csv",index=False)
