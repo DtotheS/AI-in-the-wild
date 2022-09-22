@@ -1,2 +1,8 @@
 
 .DS_Store
+share/eda.py
+share/factcheck_websites.csv
+share/fc_src.csv
+share/snopes_aipattern.py
+share/snopes_crawler.py
+share/snopes_src_process.py

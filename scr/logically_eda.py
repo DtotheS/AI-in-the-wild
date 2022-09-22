@@ -25,14 +25,91 @@ for yy in range(2019,2023):
             dcnt.append(0)
 len(dname) == len(dcnt)
 
-plt.plot(dcnt)
+plt.plot(dcnt,linestyle="-", marker="o")
 plt.grid()
-plt.xticks(np.arange(len(dcnt)), dname, rotation=90)
+plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("Logically: # FCs for each month (2019-6 ~ 2022-08")
+plt.title("Logically: # FCs for each month (2019-6 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %len(df))
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month.png",dpi=600)
+plt.show()
+plt.close()
+
+# y: # FCS, x: Dates (for each month) - only for us
+# Finding: peak (8) reaches early compared to other websites (11).
+set(df['location'])
+df.groupby(['location','fc_year','fc_month']).count().loc['United States']['link']
+dname = []
+dcnt = []
+for yy in range(2019,2023):
+    for mm in range(1,13):
+        dname.append("{}-{}".format(yy,mm))
+        print("{}-{}".format(yy,mm))
+        try:
+            dcnt.append(df.groupby(['location','fc_year', 'fc_month']).count().loc['United States']['link'][yy][mm])
+        except:
+            dcnt.append(0)
+len(dname) == len(dcnt)
+
+plt.plot(dcnt,linestyle="-", marker="o")
+plt.grid()
+plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("Logically(US): # FCs for each month (2019-6 ~ 2022-08)")
+plt.xlabel("Date (yyyy-mm)")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)" %df.groupby(['location','fc_year','fc_month']).count().loc['United States']['link'].sum())
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month_US.png",dpi=600)
+plt.show()
+plt.close()
+
+# y: # FCS, x: Dates (for each month) - only for India
+df.groupby(['location','fc_year','fc_month']).count().loc['India']['link']
+dname = []
+dcnt = []
+for yy in range(2019,2023):
+    for mm in range(1,13):
+        dname.append("{}-{}".format(yy,mm))
+        print("{}-{}".format(yy,mm))
+        try:
+            dcnt.append(df.groupby(['location','fc_year', 'fc_month']).count().loc['India']['link'][yy][mm])
+        except:
+            dcnt.append(0)
+len(dname) == len(dcnt)
+
+plt.plot(dcnt,linestyle="-", marker="o")
+plt.grid()
+plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("Logically(India): # FCs for each month (2019-6 ~ 2022-08)")
+plt.xlabel("Date (yyyy-mm)")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)" %df.groupby(['location','fc_year','fc_month']).count().loc['India']['link'].sum())
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month_india.png",dpi=600)
+plt.show()
+plt.close()
+
+# y: # FCS, x: Dates (for each month) - only for United Kingdom
+df.groupby(['location','fc_year','fc_month']).count().loc['United Kingdom']['link']
+dname = []
+dcnt = []
+for yy in range(2019,2023):
+    for mm in range(1,13):
+        dname.append("{}-{}".format(yy,mm))
+        print("{}-{}".format(yy,mm))
+        try:
+            dcnt.append(df.groupby(['location','fc_year', 'fc_month']).count().loc['United Kingdom']['link'][yy][mm])
+        except:
+            dcnt.append(0)
+len(dname) == len(dcnt)
+
+plt.plot(dcnt,linestyle="-", marker="o")
+plt.grid()
+plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("Logically(UK): # FCs for each month (2019-6 ~ 2022-08)")
+plt.xlabel("Date (yyyy-mm)")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)" %df.groupby(['location','fc_year','fc_month']).count().loc['United Kingdom']['link'].sum())
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month_uk.png",dpi=600)
 plt.show()
 plt.close()
 
@@ -127,7 +204,7 @@ yp = []
 for i in y:
     yp.append(str(int(round(i/len(df) * 100,0)))+"%")
 
-# FCS per author - only top 20 authors
+# FCS for each author - only top 20 authors
 plt.bar(x,y,label="# FCs")
 for i in range(len(x)):
     plt.text(x[i], y[i], yp[i], ha = 'center')
@@ -171,10 +248,10 @@ for i in range(len(x)):
     plt.text(x[i], y2[i], y2[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.2, top=0.90)
-plt.title("AVG. # authors by year")
-plt.ylabel("AVG. number of authors "+"(Total: %s)"%len(set(df['author'])))
+plt.title("FCs/Authors by year")
+plt.ylabel("Number of FCs per author")
 plt.xlabel("year")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/avgAuthors_year.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_perauthor.png",dpi=600)
 plt.show()
 plt.close()
 
