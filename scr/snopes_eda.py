@@ -50,11 +50,12 @@ df.loc[df['rating']=="none"] = None
 
 plt.style.use('seaborn-bright')
 
+df = df[df['date_published'].between(dt(2019,5,17),dt(2022,8,31))]
 # y: # FCS, x: Dates (for each month)
 df.groupby(['yearp','monthp']).count()['url']
 dname = []
 dcnt = []
-for yy in range(2016,2023):
+for yy in range(2019,2023):
     for mm in range(1,13):
         dname.append("{}-{}".format(yy,mm))
         print("{}-{}".format(yy,mm))
@@ -63,17 +64,18 @@ for yy in range(2016,2023):
         except:
             dcnt.append(0)
 len(dname) == len(dcnt)
-dname = dname[:80]
-dcnt = dcnt[:80] # ~ 2022-7
+len(dname)
+dname = dname[4:44]
+dcnt = dcnt[4:44] # ~ 2022-7
 
-plt.plot(dcnt)
-plt.xticks(np.arange(0,len(dcnt),2), dname[::2], rotation=90, minor=False)
-plt.grid(which='both')
+plt.plot(dcnt,linestyle="-", marker="o")
+plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
+plt.grid()
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("Snopes: # FCs for each month (2016-1 ~ 2022-08)")
+plt.title("Snopes: # FCs for each month (2019-5 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %len(df))
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_month.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_month.png",dpi=600)
 plt.show()
 plt.close()
 
@@ -89,10 +91,10 @@ for i in range(len(x)):
     plt.text(x[i], y[i], yp[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("# FCs by Rating")
+plt.title("SN: # FCs by Rating")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df))
 plt.xlabel("Ratings")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_rating.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_rating.png",dpi=600)
 plt.show()
 plt.close()
 
@@ -130,7 +132,7 @@ for yy in years_li:
             rating_dic[yy].append(0)
 
 # for yy in years_li:
-for yy in [2016,2017,2018,2019,2020]:
+for yy in [2019,2020,2021,2022]:
     plt.plot(rating_dic['name'], rating_dic[yy], linestyle="-", marker="o", label="%s" %(yy))
 plt.legend()
 plt.xticks(np.arange(len(rating_dic['name'])), rating_dic['name'], rotation=90)
@@ -138,7 +140,7 @@ plt.subplots_adjust(bottom=0.4, top=0.99)
 plt.title("# FCs by Rating & Year")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df))
 plt.xlabel("Ratings")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_rating_years.png",dpi=600)
+# plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_rating_years.png",dpi=600)
 plt.show()
 plt.close()
 
@@ -212,15 +214,21 @@ for cc in df.groupby('primary_category').count().sort_values(['yearp','url'],asc
     cnt_cat.append(df.groupby('primary_category').count().sort_values(['yearp','url'],ascending=False).loc[cc]['url'])
 x=df.groupby('primary_category').count().sort_values(['yearp','url'],ascending=False).index
 y=df.groupby('primary_category').count().sort_values(['yearp','url'],ascending=False)['url']
-plt.bar(x[:30], y[:30],label="# FCs")
-plt.xticks(np.arange(len(x[:30])),x[:30],rotation=90)
+yp = []
+for i in y:
+    yp.append(str(int(round(i/len(df) * 100,0)))+"%")
+plt.bar(x[:20], y[:20],label="# FCs")
+for i in range(len(x[:20])):
+    plt.text(x[i], y[i], yp[i], ha = 'center')
+
+plt.xticks(np.arange(len(x[:20])),x[:20],rotation=90)
 # plt.xticks(np.arange(len(years_li)),years_li,color='blue')
 plt.subplots_adjust(bottom=0.4, top=0.9)
 plt.legend()
-plt.title("# FCs by Primary Category")
+plt.title("SN: # FCs by Primary Category - Only top 20")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df))
-plt.xlabel("Primary Category")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_pcategory.png",dpi=600)
+plt.xlabel("Primary Category" + "(Total # categories: %s)"%len(x))
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_pcategory.png",dpi=600)
 plt.show()
 plt.close()
 
@@ -248,41 +256,35 @@ plt.xticks(np.arange(len(x)),x,rotation=90)
 # plt.xticks(np.arange(len(years_li)),years_li,color='blue')
 plt.subplots_adjust(bottom=0.4, top=0.90)
 # plt.legend()
-plt.title("# FCs by Authors")
+plt.title("SN: # FCs by Authors")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df))
 plt.xlabel("Authors" +"(Total # Authors: %s)"%len(author_dic['name']))
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_author.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_author.png",dpi=600)
 plt.show()
 plt.close()
 # df.groupby('author_name').count().loc['Alex Kasprak']['url']
 
-# number of authors in each year
-for year in years_li:
-    print("# authors in %s:" %(year),len(author.loc[year]))
-
-for year in years_li:
-    print("FCS/author in %s:" % year, round(np.array(count_dic[year]).sum()/len(author.loc[year]),1))
 
 # authors for each year
+years_li = df.groupby('yearp').count().index.to_list()
 y = []
 for yy in years_li:
     print(str(yy) +": # authors = "+str(len(df.groupby(['yearp','author_name']).count().sort_values(['yearp','url'],ascending=False).loc[yy])))
     y.append(len(df.groupby(['yearp','author_name']).count().sort_values(['yearp','url'],ascending=False).loc[yy]))
-x = [str(yy) for yy in years_li]
+x = [str(int(yy)) for yy in years_li]
 
 plt.bar(x,y,label="# Authors")
 for i in range(len(x)):
     plt.text(x[i], y[i], y[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.2, top=0.90)
-plt.title("# authors by year")
+plt.title("SN: # authors by year")
 plt.ylabel("number of authors "+"(Total: %s)"%len(set(df['author_name'])))
 plt.xlabel("year")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/authors_year.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_authors_year.png",dpi=600)
 plt.show()
 plt.close()
 
-# #FCs / author for every year
 # average fc/author for each year
 y2 = df.groupby('yearp').count()['url'].to_list() # number of FCs per year
 for i in range(len(y)): # here, y is defined by # author per year. from the above code.
@@ -294,12 +296,13 @@ for i in range(len(x)):
     plt.text(x[i], y2[i], y2[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.2, top=0.90)
-plt.title("FCs/Authors by year")
+plt.title("SN: FCs/Authors by year")
 plt.ylabel("Number of FCs per author")
 plt.xlabel("year")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_perauthor.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_perauthor.png",dpi=600)
 plt.show()
 plt.close()
+
 
 #Author by Rating
 y = df.groupby(['author_name']).count().sort_values(['url'],ascending=False)['url'][:].to_list()
@@ -311,6 +314,22 @@ for nn in x:
     df_aurating['%s' % nn] = pd.Series(df.groupby(['author_name','rating']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:].index.get_level_values('rating'))
     df_aurating['%s_v' % nn] = pd.Series(df.groupby(['author_name','rating']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:].array)  # since this is Series, .array is needed to add as column in df.
     df_aurating['%s_p' % nn] = pd.Series((df.groupby(['author_name','rating']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:].array / df.groupby(['author_name','rating']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:].array.sum()) * 100)
+
+ratings_li = ['TRUE','Mostly True','Mixture','Mostly False','FALSE',
+ 'Correct Attribution',
+ 'Labeled Satire',
+ 'Legend',
+ 'Legit',
+ 'Misattributed',
+ 'Miscaptioned',
+ 'No Rating',
+ 'Originated as Satire',
+ 'Outdated',
+ 'Recall',
+ 'Research In Progress',
+ 'Scam',
+ 'Unfounded',
+ 'Unproven']
 
 dic_rat = {}
 for name in x:
@@ -333,14 +352,14 @@ for name in x[:10]:
     plt.plot(ratings_li,dic_rat[name],marker='',color=palette(num),linewidth=1, alpha=0.9, label=name)
 
 # Add titles
-plt.title("Absolute number of FCs by rating & author", loc='left', fontsize=12, fontweight=0, color='orange')
+plt.title("SN: Absolute number of FCs by rating & author", loc='left', fontsize=12, fontweight=0, color='orange')
 plt.xlabel("Rating")
 plt.ylabel("# FCs")
 # Show the graph
 plt.legend()
 plt.xticks(np.arange(len(ratings_li)),ratings_li,rotation=90)
-plt.subplots_adjust(bottom=0.3, top=0.90)
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/absFcs_rating_author.png",dpi=600)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_absFcs_rating_author.png",dpi=600)
 plt.show()
 plt.close()
 
@@ -352,21 +371,21 @@ for name in x[:10]:
     plt.plot(ratings_li,dic_rat[name+"_p"],marker='',color=palette(num),linewidth=1, alpha=0.9, label=name)
 
 # Add titles
-plt.title("Relative(%) number of FCs by rating & author", loc='left', fontsize=12, fontweight=0, color='red')
+plt.title("SN: Relative(%) number of FCs by rating & author", loc='left', fontsize=12, fontweight=0, color='red')
 plt.xlabel("Ratings")
 plt.ylabel("Percentage (%)")
 # Show the graph
 plt.legend()
 plt.xticks(np.arange(len(ratings_li)),ratings_li,rotation=90)
-plt.subplots_adjust(bottom=0.3, top=0.90)
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/relFcs_rating_author.png",dpi=600)
+plt.subplots_adjust(bottom=0.35, top=0.90)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_relFcs_rating_author.png",dpi=600)
 plt.show()
 plt.close()
 
 
 #Author by Topic
 x = df.groupby(['author_name']).count().sort_values(['url'],ascending=False)[:].index.tolist()
-
+x
 df_author = pd.DataFrame()
 for nn in x:
     df_author['%s' % nn] = pd.Series(df.groupby(['author_name','primary_category']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:10].index.get_level_values('primary_category'))
@@ -379,15 +398,16 @@ for name in x:
     x2 = df_author[df_author[name].notnull()][name].to_list()
     y2 = df_author[df_author[name+"_v"].notnull()][name+"_v"].to_list()
     y2p = df_author[df_author[name + "_p"].notnull()][name + "_p"].to_list()
+    tot = df.groupby(['author_name']).count().sort_values(['url'],ascending=False)[:]['url'][name]
     plt.bar(x2,y2, label="# FCs")
     for i in range(len(x2)):
         plt.text(x2[i], y2[i], round(y2p[i],1), ha='center')
     plt.xticks(np.arange(len(x2)), x2, rotation=90)
     plt.subplots_adjust(bottom=0.4, top=0.90)
-    plt.title("%s's top 10 primary categories" %name)
-    plt.ylabel("Number of FCs" + "(Total # FCs = %s)"%sum(y2))
+    plt.title("SN: %s's top 10 primary categories" %name)
+    plt.ylabel("Number of FCs" + "(Total # FCs = %s)"%tot)
     plt.xlabel("Primary Category")
-    plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/fcs_pcat_%s.png"%name, dpi=600)
+    plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_pcat_%s.png"%name, dpi=600)
     plt.show()
     plt.close()
 
@@ -427,14 +447,18 @@ sort_counter = dict(sorted(counter.items(), key=lambda item: item[1],reverse=Tru
 x = list(sort_counter.keys())[:20]
 y = list(sort_counter.values())[:20]
 
+yp = []
+for i in y:
+    yp.append(str(int(round(i/len(df) * 100,1)))+"%")
+
 plt.bar(x,y,label="Sources & References - Top 20")
 for i in range(len(x)):
-    plt.text(x[i], y[i], y[i], ha = 'center')
+    plt.text(x[i], y[i], yp[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.3, top=0.90)
-plt.title("Sources & References - Top 20")
+plt.title("SN: Sources & References - Top 20")
 plt.ylabel("Frequency"+"(Total frequency: %s)"%len(dms))
 plt.xlabel("Source Name (Total # keywords: %s)" %len(set(dms)))
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/source_freq.png",dpi=600)
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_source_freq.png",dpi=600)
 plt.show()
 plt.close()

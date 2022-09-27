@@ -25,11 +25,14 @@ for yy in range(2019,2023):
             dcnt.append(0)
 len(dname) == len(dcnt)
 
+dname = dname[4:44]
+dcnt = dcnt[4:44]
+
 plt.plot(dcnt,linestyle="-", marker="o")
 plt.grid()
 plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
-plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("Logically: # FCs for each month (2019-6 ~ 2022-08)")
+plt.subplots_adjust(bottom=0.2, top=0.90)
+plt.title("Logically: # FCs for each month (2019-5 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %len(df))
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month.png",dpi=600)
@@ -51,12 +54,14 @@ for yy in range(2019,2023):
         except:
             dcnt.append(0)
 len(dname) == len(dcnt)
+dname = dname[4:44]
+dcnt = dcnt[4:44]
 
 plt.plot(dcnt,linestyle="-", marker="o")
 plt.grid()
 plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("Logically(US): # FCs for each month (2019-6 ~ 2022-08)")
+plt.title("Logically(US): # FCs for each month (2019-5 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %df.groupby(['location','fc_year','fc_month']).count().loc['United States']['link'].sum())
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month_US.png",dpi=600)
@@ -76,12 +81,14 @@ for yy in range(2019,2023):
         except:
             dcnt.append(0)
 len(dname) == len(dcnt)
+dname = dname[4:44]
+dcnt = dcnt[4:44]
 
 plt.plot(dcnt,linestyle="-", marker="o")
 plt.grid()
 plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("Logically(India): # FCs for each month (2019-6 ~ 2022-08)")
+plt.title("Logically(India): # FCs for each month (2019-5 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %df.groupby(['location','fc_year','fc_month']).count().loc['India']['link'].sum())
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month_india.png",dpi=600)
@@ -101,12 +108,13 @@ for yy in range(2019,2023):
         except:
             dcnt.append(0)
 len(dname) == len(dcnt)
-
+dname = dname[4:44]
+dcnt = dcnt[4:44]
 plt.plot(dcnt,linestyle="-", marker="o")
 plt.grid()
 plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("Logically(UK): # FCs for each month (2019-6 ~ 2022-08)")
+plt.title("Logically(UK): # FCs for each month (2019-5 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %df.groupby(['location','fc_year','fc_month']).count().loc['United Kingdom']['link'].sum())
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_month_uk.png",dpi=600)
@@ -210,7 +218,7 @@ for i in range(len(x)):
     plt.text(x[i], y[i], yp[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("# FCs by author - Top 20 only")
+plt.title("LG: # FCs by author - Top 20 only")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df))
 plt.xlabel("Author")
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_20author.png",dpi=600)
@@ -230,7 +238,7 @@ for i in range(len(x)):
     plt.text(x[i], y[i], y[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.2, top=0.90)
-plt.title("# authors by year")
+plt.title("LG: # authors by year")
 plt.ylabel("number of authors "+"(Total: %s)"%len(set(df['author'])))
 plt.xlabel("year")
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/authors_year.png",dpi=600)
@@ -248,7 +256,7 @@ for i in range(len(x)):
     plt.text(x[i], y2[i], y2[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.2, top=0.90)
-plt.title("FCs/Authors by year")
+plt.title("LG: FCs/Authors by year")
 plt.ylabel("Number of FCs per author")
 plt.xlabel("year")
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/fcs_perauthor.png",dpi=600)
@@ -319,7 +327,9 @@ plt.close()
 
 df['key_word'] = df['key_word'].apply(lambda x: x.strip("'[]`").split("\\n")) #make list as list.
 df['key_word'] = df['key_word'].apply(lambda x : None if (x == ['']) else x) #[''] = None
+
 len(df) - df['key_word'].isnull().sum() #2002 has keywods.
+
 
 ks = []
 for i in range(len(df)):
@@ -339,17 +349,74 @@ sort_counter = dict(sorted(counter.items(), key=lambda item: item[1],reverse=Tru
 x = list(sort_counter.keys())[:20]
 y = list(sort_counter.values())[:20]
 
+yp = []
+for i in y:
+    yp.append(str(int(round(i/len(df) * 100,0)))+"%")
+
 plt.bar(x,y,label="Key Words Frequency - Top 20")
 for i in range(len(x)):
-    plt.text(x[i], y[i], y[i], ha = 'center')
+    plt.text(x[i], y[i], yp[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.55, top=0.90)
-plt.title("Key Words")
-plt.ylabel("Frequency"+"(Total frequency: %s)"%len(ks))
-plt.xlabel("Key Word (Total # keywords: %s)" %len(set(ks)))
+plt.title("LG: Key Words - Only top 20")
+plt.ylabel("# of FCs"+" (KW O / # FCs = %s / %s)"%(df['key_word'].notnull().sum(),len(df)))
+plt.xlabel("Key Word (Total # keywords: %s, " %len(set(ks)) +"Total frequency: %s)"%len(ks))
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/keyword_freq.png",dpi=600)
 plt.show()
 plt.close()
+
+
+
+#Author by Topic
+x = df.groupby(['author']).count().sort_values(['link'],ascending=False)[:].index.tolist()
+# df.groupby(['author']).agg({'key_word':'sum'}).loc['Devika Khandelwal'][0]
+# test = df.groupby(['author']).agg({'key_word':'sum'}).loc["Jinsha"][0]
+x
+import collections
+# counter = collections.Counter(test)
+# sort_counter = dict(sorted(counter.items(), key=lambda item: item[1],reverse=True))
+# sum(sort_counter.values()) # total keys
+# list = list(sort_counter)[:10] # top 10 keys
+# list(sort_counter.values())[:10] # values of top 10 keys
+
+df_author = pd.DataFrame()
+for nn in x:
+    print(nn)
+    foo = df.groupby(['author']).agg({'key_word':'sum'}).loc[nn][0]
+    try:
+        counter = collections.Counter(foo)
+        sort_counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+        df2 = pd.DataFrame({'%s' % nn: list(sort_counter)[:], '%s_v' % nn: list(sort_counter.values())[:],
+                            '%s_p' % nn: [i / sum(sort_counter.values()) * 100 for i in
+                                          list(sort_counter.values())[:]]})
+        df_author = pd.concat([df_author, df2], ignore_index=False, axis=1)
+    except:
+        pass
+
+    # df_author['%s' % nn] = list(sort_counter)[:10]
+    # df_author['%s_v' % nn] = list(sort_counter.values())[:10]
+    # df_author['%s_p' % nn] = [i / sum(sort_counter.values()) for i in list(sort_counter.values())[:10]]
+    # print(df.groupby(['author_name','primary_category']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:10])
+# df.groupby(['author_name','primary_category']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:10].index.get_level_values('primary_category')
+
+df['key_word'].isnull().sum() # 2002 vs. 2363
+for name in x[:10]:
+    x2 = df_author[df_author[name].notnull()][name][:10].to_list()
+    y2 = df_author[df_author[name+"_v"].notnull()][name+"_v"][:10].to_list()
+    y2p = df_author[df_author[name + "_p"].notnull()][name + "_p"][:10].to_list()
+    tot = df_author[df_author[name+"_v"].notnull()][name+"_v"].to_list()
+    plt.bar(x2,y2, label="# FCs")
+    for i in range(len(x2)):
+        plt.text(x2[i], y2[i], round(y2p[i],1), ha='center')
+    plt.xticks(np.arange(len(x2)), x2, rotation=90)
+    plt.subplots_adjust(bottom=0.4, top=0.90)
+    plt.title("LG: %s's top 10 primary categories" %name)
+    plt.ylabel("Number of FCs" + "(Total # FCs = %s)"%sum(tot))
+    plt.xlabel("Primary Category")
+    plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/s_fcs_pcat_%s.png"%name, dpi=600)
+    plt.show()
+    plt.close()
+
 
 # Sources Analysis
 import ast
@@ -378,14 +445,20 @@ y = list(sort_counter.values())[:20]
 x[5] = "cdc" # too long
 x[19] = "u.s. fda" # too long
 plt.bar(x,y,label="Sources & References - Top 20")
+
+yp = []
+for i in y:
+    yp.append(str(int(round(i/len(ks) * 100,0)))+"%")
+
 for i in range(len(x)):
-    plt.text(x[i], y[i], y[i], ha = 'center')
+    plt.text(x[i], y[i], yp[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
 plt.subplots_adjust(bottom=0.5, top=0.90)
-plt.title("Sources & References - Top 20")
+plt.title("LG: Sources & References - Top 20")
 plt.ylabel("Frequency"+"(Total frequency: %s)"%len(ks))
 plt.xlabel("Source Name (Total # keywords: %s)" %len(set(ks)))
 plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/logically/source_freq.png",dpi=600)
 plt.show()
 plt.close()
+
 

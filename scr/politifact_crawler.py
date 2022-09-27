@@ -19,6 +19,9 @@ import re
 # driver = webdriver.Chrome(ChromeDriverManager().install())
 # driver.close()
 
+
+
+
 # Define Functions
 
 # Start to Collect Data
@@ -29,8 +32,8 @@ options.add_argument('--disable-dev-shm-usage')
 options.add_argument("--disable-popup-blocking")
 options.add_argument("--disable-notifications")
 
-# driver = webdriver.Chrome('chromedriver', options=options)
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+driver = webdriver.Chrome('chromedriver', options=options)
+# driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 # driver.get("https://www.politifact.com/factchecks/list/?page=2&ruling=true")
 # driver.current_url
 
@@ -147,14 +150,14 @@ finaldf = df[['claim','link','rating','fc_date','author','cdate','cwhere']]
 
 # import os
 # os.getcwd()
-# finaldf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v3_072122.csv")
+finaldf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv", index=False)
 
 ######################## Select only 2016 ~ 2021 years' data #######################
 import os
 os.getcwd()
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v3_072122.csv")
-len(df) # Total 21262
-df = df.rename(columns={df.columns[0]: "id" })
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv")
+len(df) # Total 21595
+# df = df.rename(columns={df.columns[0]: "id" })
 df['id']
 df.columns
 df.isnull().sum()
@@ -170,10 +173,11 @@ df['fc_year'].isnull().sum()
 df['fc_month'].isnull().sum()
 df['fc_day'].isnull().sum()
 
-len(df)
-df = df[df['fc_year'].between(2016,2021)] # Select FCs published between 2016 and 2021
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv", index=False)
+# len(df)
+# df = df[df['fc_year'].between(2016,2021)] # Select FCs published between 2016 and 2021
 # df = df[df['fc_year']==2022] # Select 2022
-len(df) # total # FCs: 9534
+# len(df) # total # FCs: 9534
 # df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv3_16to21.csv",index=False)
 # df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf2022.csv",index=False)
 

@@ -6,7 +6,15 @@ import numpy as np
 from datetime import datetime as dt
 import csv
 
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv5_16to21.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv")
+len(df) #21595
+df['fc_date']=pd.to_datetime(df['fc_date'])
+df['cdate']=pd.to_datetime(df['cdate'])
+df = df[df['fc_date'].between(dt(2016,1,1),dt(2022,8,31))]
+len(df) #10710
+df2 = df[df['fc_date'].between(dt(2019,5,17),dt(2022,8,31))] # overlap period for all the 4 FC websites
+len(df2) # 5806
+
 years_li=list(set(df['fc_year']))
 years_li = [int(x) for x in years_li]
 years_li.sort()
@@ -15,75 +23,70 @@ month_li = list(set(df['fc_month']))
 month_li = [int(x) for x in month_li]
 month_li.sort()
 
-## rating
-rating = df.groupby(['fc_year','rating']).count().sort_values(['fc_year'],ascending=False)#.loc[2016]
-ratings_li = list(set(rating.index.get_level_values('rating')))
-print(ratings_li)
-ratings_li = ['true','mostly-true','half-true','barely-true', 'false','pants-fire'] # Make an order
-
-rating_dic={}
-rating_dic['name']=ratings_li
-for yy in years_li:
-    rating_dic[yy]=[]
-    for rr in ratings_li:
-        try:
-            rating_dic[yy].append(rating.loc[yy].loc[rr][0])
-        except:
-            rating_dic[yy].append(0)
-
-# x: ratings, y: # FCs, line: years
-# Change the style of plot
 plt.style.use('seaborn-bright')
 
-for yy in years_li:
-    plt.plot(rating_dic['name'], rating_dic[yy], linestyle="-", marker="o", label="%s" %(yy))
-plt.legend()
-plt.xticks(np.arange(len(rating_dic['name'])), rating_dic['name'], rotation=90)
-plt.subplots_adjust(bottom=0.3, top=0.99)
-plt.ylabel("number of FCs")
-plt.xlabel("ratings")
-plt.show()
-plt.close()
-
-# x: months, y: #FCs, line: years
-count = df.groupby(['fc_year','fc_month']).count().sort_values(['fc_year','fc_month'],ascending=False)
-count_dic={}
-count_dic['name']=month_li
-for yy in years_li:
-    count_dic[yy]=[]
-    for mm in month_li:
+# y: # FCS, x: Dates (for each month)
+# Finding: peak (8) reaches early compared to other websites (11).
+df.groupby(['fc_year','fc_month']).count()['link']
+dname = []
+dcnt = []
+for yy in range(2016,2023):
+    for mm in range(1,13):
+        dname.append("{}-{}".format(yy,mm))
+        print("{}-{}".format(yy,mm))
         try:
-            count_dic[yy].append(count.loc[yy].loc[mm][0])
+            dcnt.append(df.groupby(['fc_year', 'fc_month']).count()['link'][yy][mm])
         except:
-            count_dic[yy].append(0)
+            dcnt.append(0)
+len(dname) == len(dcnt)
 
-for yy in years_li:
-    plt.plot(count_dic['name'], count_dic[yy], linestyle="-", marker="o", label="%s" %(yy))
-plt.legend()
-plt.xticks(np.arange(1,len(count_dic['name'])+1), count_dic['name'], rotation=90)
-# plt.subplots_adjust(bottom=0.4, top=0.99)
-plt.ylabel("number of FCs")
-plt.xlabel("Month")
-plt.show()
-plt.close()
-
-# number of FCs: 2016-01 ~ 2021-12
-count_li = count['id'].to_list()
-count_li.reverse()
-monthall = []
-for yy in years_li:
-    for mm in month_li:
-        monthall.append(str(yy)+"-"+str(mm))
-plt.plot(monthall, count_li, linestyle="-", marker="o", label="# FCs")
-plt.xticks(np.arange(0,len(monthall),5),[monthall[i] for i in np.arange(0,len(monthall),5)],rotation=90)
-plt.subplots_adjust(bottom=0.2, top=0.99)
-plt.legend()
+ol_dname = dname[40:80] # Only for OL peridos
+ol_dcnt = dcnt[40:80]
+plt.plot(ol_dcnt,linestyle="-", marker="o")
 plt.grid()
-plt.ylabel("number of FCs")
-plt.xlabel("Year-Month")
+plt.xticks(np.arange(0,len(ol_dcnt),5), ol_dname[::5], rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("Politifact: # FCs for each month (2019-5 ~ 2022-08)")
+plt.xlabel("Date (yyyy-mm)")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)" %len(df2))
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_month.png",dpi=600)
 plt.show()
 plt.close()
 
+dname[:80]
+dcnt[:80]
+plt.plot(dcnt[:80],linestyle="-", marker="o")
+plt.grid()
+plt.xticks(np.arange(0,len(dcnt[:80]),5), dname[:80][::5], rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("Politifact: # FCs for each month (2016-1 ~ 2022-08)")
+plt.xlabel("Date (yyyy-mm)")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)" %len(df))
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_month2.png",dpi=600)
+plt.show()
+plt.close()
+
+# y: FCs, x: ratings
+x = df2.groupby(['rating']).count()['link'].index.to_list()
+x = [x[-1], x[2], x[3], x[0], x[1], x[4]]
+y = df2.groupby(['rating']).count()['link'].to_list()
+y = [y[-1], y[2], y[3], y[0], y[1], y[4]]
+yp = []
+for i in y:
+    yp.append(str(round(i/len(df) * 100,2))+"%")
+
+plt.bar(x,y,label="# FCs")
+for i in range(len(x)):
+    plt.text(x[i], y[i], yp[i], ha = 'center')
+plt.xticks(np.arange(len(x)),x,rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("Politifact: # FCs by Rating")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df2))
+plt.xlabel("Ratings")
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_rating.png",dpi=600)
+plt.show()
+plt.close()
+'''
 # number of FCs: x: years
 def addlabels(x,y):
     for i in range(len(x)):
@@ -115,7 +118,140 @@ plt.ylabel("number of FCs")
 plt.xlabel("ratings")
 plt.show()
 plt.close()
+'''
 
+# y: FCs, x: Authors
+x = df2.groupby('author').count().index.to_list()
+y = df2.groupby('author').count()['link'].to_list()
+for a, b in zip(x,y):
+    print(a,b)
+
+## only want to show top 20 authors, cause there are too many!
+dic_author = {}
+for i in range(len(x)):
+    dic_author[x[i]]=y[i]
+
+dic_author = dict(sorted(dic_author.items(), key=lambda item: item[1],reverse=True))
+
+x = list(dic_author.keys())[:20]
+y = list(dic_author.values())[:20]
+yp = []
+for i in y:
+    yp.append(str(int(round(i/len(df2) * 100,0)))+"%")
+
+# FCS for each author - only top 20 authors
+plt.bar(x,y,label="# FCs")
+for i in range(len(x)):
+    plt.text(x[i], y[i], yp[i], ha = 'center')
+plt.xticks(np.arange(len(x)),x,rotation=90)
+plt.subplots_adjust(bottom=0.4, top=0.90)
+plt.title("PF: # FCs by author - Top 20 only")
+plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df2))
+plt.xlabel("Author")
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_20author.png",dpi=600)
+plt.show()
+plt.close()
+
+
+# authors for each year
+years_li = df2.groupby('fc_year').count().index.to_list()
+y = []
+for yy in years_li:
+    print(str(yy) +": # authors = "+str(len(df2.groupby(['fc_year','author']).count().sort_values(['fc_year','link'],ascending=False).loc[yy])))
+    y.append(len(df2.groupby(['fc_year','author']).count().sort_values(['fc_year','link'],ascending=False).loc[yy]))
+x = [str(yy) for yy in years_li]
+
+plt.bar(x,y,label="# Authors")
+for i in range(len(x)):
+    plt.text(x[i], y[i], y[i], ha = 'center')
+plt.xticks(np.arange(len(x)),x,rotation=90)
+plt.subplots_adjust(bottom=0.2, top=0.90)
+plt.title("PF: # authors by year")
+plt.ylabel("number of authors "+"(Total: %s)"%len(set(df2['author'])))
+plt.xlabel("year")
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_authors_year.png",dpi=600)
+plt.show()
+plt.close()
+
+# average fc/author for each year
+y2 = df2.groupby('fc_year').count()['link'].to_list() # number of FCs per year
+for i in range(len(y)): # here, y is defined by # author per year. from the above code.
+    print(str(x[i])+"'s FCs per Author: "+str(round(y2[i]/y[i],2)))
+    y2[i] = round(y2[i]/y[i],2)
+
+plt.bar(x,y2,label="# Authors")
+for i in range(len(x)):
+    plt.text(x[i], y2[i], y2[i], ha = 'center')
+plt.xticks(np.arange(len(x)),x,rotation=90)
+plt.subplots_adjust(bottom=0.2, top=0.90)
+plt.title("PF: FCs/Authors by year")
+plt.ylabel("Number of FCs per author")
+plt.xlabel("year")
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_perauthor.png",dpi=600)
+plt.show()
+plt.close()
+
+# Ratings of top20 authors
+y = df2.groupby(['author']).count().sort_values(['link'],ascending=False)['link'][:20].to_list()
+x = df2.groupby(['author']).count().sort_values(['link'],ascending=False)[:20].index.tolist()
+
+df2_aurating = pd.DataFrame()
+df2_aurating['dummy'] = range(len(set(df2['rating'])))
+for nn in x:
+    df2_aurating['%s' % nn] = pd.Series(df2.groupby(['author','rating']).count().sort_values(['author','link'],ascending=False).loc[nn]['link'][:].index.get_level_values('rating'))
+    df2_aurating['%s_v' % nn] = pd.Series(df2.groupby(['author','rating']).count().sort_values(['author','link'],ascending=False).loc[nn]['link'][:].array)  # since this is Series, .array is needed to add as column in df2.
+    df2_aurating['%s_p' % nn] = pd.Series((df2.groupby(['author','rating']).count().sort_values(['author','link'],ascending=False).loc[nn]['link'][:].array / df2.groupby(['author','rating']).count().sort_values(['author','link'],ascending=False).loc[nn]['link'][:].array.sum()) * 100)
+
+ratings_li = ['true', 'half-true', 'mostly-true', 'barely-true', 'false', 'pants-fire']
+dic_rat = {}
+for name in x:
+    dic_rat[name] = []
+    for rat in ratings_li:
+        dic_rat[name].append(df2[(df2['author']==name) & (df2['rating']==rat)].count()[0])
+
+for name in x:
+    dic_rat[name+"_p"] = []
+    for rat in ratings_li:
+        dic_rat[name+"_p"].append(round((df2[(df2['author']==name) & (df2['rating']==rat)].count()[0])/(df2[df2['author']==name].count()[0])*100,1))
+
+
+# Create a color palette
+palette = plt.get_cmap('Paired')
+
+## top 10 authors FCs by rating
+num = 0
+for name in x[:10]:
+    num+=1
+    plt.plot(ratings_li,dic_rat[name],marker='',color=palette(num),linewidth=1, alpha=0.9, label=name)
+
+# Add titles
+plt.title("PF: Absolute number of FCs by rating & author", loc='left', fontsize=12, fontweight=0, color='orange')
+plt.xlabel("Rating")
+plt.ylabel("# FCs")
+# Show the graph
+plt.legend()
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_absFcs_rating_author.png",dpi=600)
+plt.show()
+plt.close()
+
+# PercentageL top 10 authors FCs by rating
+## finding: different with politifact, this graph shows that there is not much difference between authors.
+num = 0
+for name in x[:10]:
+    num+=1
+    plt.plot(ratings_li,dic_rat[name+"_p"],marker='',color=palette(num),linewidth=1, alpha=0.9, label=name)
+
+# Add titles
+plt.title("PF: Relative(%) number of FCs by rating & author", loc='left', fontsize=12, fontweight=0, color='red')
+plt.xlabel("Ratings")
+plt.ylabel("Percentage (%)")
+# Show the graph
+plt.legend()
+plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_relFcs_rating_author.png",dpi=600)
+plt.show()
+plt.close()
+
+'''
 # Author
 df['author'][6119] = "Unknown"
 len(set(df['author'])) # There are 356 authors in total
@@ -231,10 +367,14 @@ plt.ylabel("Percentage (%)")
 plt.legend()
 plt.show()
 plt.close()
+'''
 
-# Where the misinformation comes from
-y = df.groupby('cwhere').count().sort_values('id',ascending=False)[:20]['id'].tolist()
-x = df.groupby('cwhere').count().sort_values('id',ascending=False)[:20].index.tolist()
+# Where the misinformation comes from --- Need to be improved.
+def addlabels(x,y):
+    for i in range(len(x)):
+        plt.text(x[i], y[i], y[i], ha = 'center')
+y = df.groupby('cwhere').count().sort_values('link',ascending=False)[:20]['link'].tolist()
+x = df.groupby('cwhere').count().sort_values('link',ascending=False)[:20].index.tolist()
 
 plt.bar(x,y)
 addlabels(x,y)
