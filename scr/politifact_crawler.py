@@ -15,11 +15,10 @@ from os.path import exists
 import pandas as pd
 from webdriver_manager.chrome import ChromeDriverManager
 import re
+from datetime import datetime as dt
 
 # driver = webdriver.Chrome(ChromeDriverManager().install())
 # driver.close()
-
-
 
 
 # Define Functions
@@ -182,58 +181,77 @@ df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv",
 # df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf2022.csv",index=False)
 
 ##################### Crawl FC article body contents ##########################
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv4_16to21.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv")
+# df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv4_16to21.csv")
 # df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf2022.csv")
 # df = df[df['rating'].isin(['barely-true', 'false','pants-fire'])]
 # df = df.reset_index(drop=True)
 
-df[['title','tags','summary','bodyt','sources_num','sources']] = None
+df.columns
+# df[['title','cstated_by','tags','summary','bodyt','sources_num','sources']] = None
 
-for i in range(len(df)):
-    # driver.implicitly_wait(10)
-    url = df['link'][i]
-    driver.get(url)
+df['fc_date'] = pd.to_datetime(df['fc_date'])
+len(df) # 21595
+df = df[df['fc_date'].between(dt(2016,1,1),dt(2022,8,31))]
+len(df) #10710
 
-    try:
-        title = driver.find_element_by_class_name("c-title").text
-        df['title'][i] = title
-    except:
-        pass
+for i in df.index:
+    if df['title'][i] == None:
+        # driver.implicitly_wait(10)
+        url = df['link'][i]
+        driver.get(url)
 
-    try:
-        tags = driver.find_elements_by_class_name("m-list__item")  # 4
-        tags = [x.text.strip() for x in tags]
-        df['tags'][i] = tags
-    except:
-        pass
+        try:
+            title = driver.find_element_by_class_name("c-title").text
+            df['title'][i] = title
+        except:
+            pass
 
-    try:
-        summary = driver.find_element_by_class_name("short-on-time").text
-        df['summary'][i] = summary
-    except:
-        pass
+        try:
+            tags = driver.find_elements_by_class_name("m-list__item")  # 4
+            tags = [x.text.strip() for x in tags]
+            df['tags'][i] = tags
+        except:
+            pass
 
-    try:
-        bodyt = driver.find_element_by_class_name("m-textblock").text
-        df['bodyt'][i] = bodyt
-    except:
-        pass
+        try:
+            summary = driver.find_element_by_class_name("short-on-time").text
+            df['summary'][i] = summary
+        except:
+            pass
 
-    try:
-        # sources = driver.find_element_by_class_name("m-superbox__content").text.split("\n")
-        sources = driver.find_element_by_class_name("m-superbox__content").text
-        sources = list(filter(bool, sources.strip().splitlines())) # this additional step will solve "\n\n" issue.
-        sources = [x.strip() for x in sources]
-        df['sources'][i] = sources
-    except:
-        pass
+        try:
+            bodyt = driver.find_element_by_class_name("m-textblock").text
+            df['bodyt'][i] = bodyt
+        except:
+            pass
 
-    try:
-        snum = len(sources)
-        df['sources_num'][i] = snum
-    except:
-        pass
-df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv5_16to21.csv",index=False)
+        try:
+            # sources = driver.find_element_by_class_name("m-superbox__content").text.split("\n")
+            sources = driver.find_element_by_class_name("m-superbox__content").text
+            sources = list(filter(bool, sources.strip().splitlines()))  # this additional step will solve "\n\n" issue.
+            sources = [x.strip() for x in sources]
+            df['sources'][i] = sources
+        except:
+            pass
+
+        try:
+            snum = len(sources)
+            df['sources_num'][i] = snum
+        except:
+            pass
+
+        try:
+            # add cstated_by
+            aname = driver.find_element_by_class_name("o-stage__inner").find_element_by_class_name(
+                "m-statement__name").text
+            df['cstated_by'][i] = aname
+        except:
+            pass
+        print(str(i) + url)
+
+
+df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv6_16to22.csv",index=False)
 
 '''
 tag_li = df['tags'].tolist()
@@ -250,3 +268,6 @@ for i in range(len(df)):
 
 df[df['contain']].to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/fakenews_cbv2.csv",index=False)   
 '''
+
+
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv")
