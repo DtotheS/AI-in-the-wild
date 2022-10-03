@@ -13,6 +13,7 @@ import csv
 import time
 from os.path import exists
 import pandas as pd
+import datetime
 from webdriver_manager.chrome import ChromeDriverManager
 
 # driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -283,6 +284,8 @@ with open("./AI-in-the-wild/data/urls_053022.csv","w") as f:
 # df = pd.read_csv("./AI-in-the-wild/apriori/1218_100pgs.csv") #100 urls + 3 cases of our stimuli (another 1 is from politifacts)
 # urls = df['url'].values.tolist()
 
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_091922.csv")
+df.columns
 # Collect Data from each fact-check webpage and write in CSV. #start from 11702
 from os.path import exists
 import pandas as pd
@@ -299,17 +302,71 @@ driver = webdriver.Chrome('chromedriver',options=options)
 # driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
 
 header = ['title','claim','rating','content_owner','author_name','date_published','date_updated','primary_category','tags','sourceid','sources_num','sources','bodyt','page_type']
-df[header] = None
+df2 = pd.DataFrame()
+df2['link'] = df['url']
+df2[header] = None
 
-for i in range(len(df)):
-    link = df['url'][i]
-    foo = snopes_picker(link)
-    df.loc[i][1:] = foo
+
+datetime.datetime.now()
+
+## Fix rows which contains Error in title
+cnt = 0
+for i in range(len(df2)):
+    if df2['title'][i] == 'ERROR: The request could not be satisfied' or df2['title'][i] == None:
+        link = df2['link'][i]
+        foo = snopes_picker(link)
+        df2.loc[i][1:] = foo
+        print(str(i) + ": " + link)
+        cnt += 1
+        if cnt > 0 and cnt % 100 == 0:
+            time.sleep(300)
+            print(datetime.datetime.now())
 
 import numpy as np
-df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_091922.csv",index=False) # further urls were collected.
+df2.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_100222.csv",index=False) # further urls were collected.
+df2 = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_100222.csv")
 
+## Fix rows which contains NAT in Date_published: 242
+len(df2[df2['date_published'].isnull()][['link','date_published']]) #242
+df2[df2['date_published'].isnull()][['link','date_published']]
+cnt = 0
+for i in df2[df2['date_published'].isnull()].index:
+    link = df2['link'][i]
+    foo = snopes_picker(link)
+    df2.iloc[i,1:] = foo
+    print(str(i) + ": " + link)
+    cnt += 1
+    if cnt > 0 and cnt % 100 == 0:
+        time.sleep(300)
+        print(datetime.datetime.now())
 
+## Fix rows which contains NAT in claim
+len(df2[df2['claim'].isnull()][['link','claim']]) #2439
+df2[df2['claim'].isnull()][['link','claim']]
+cnt = 0
+for i in df2[df2['claim'].isnull()].index:
+    link = df2['link'][i]
+    foo = snopes_picker(link)
+    df2.iloc[i,1:] = foo
+    print(str(i) + ": " + link)
+    cnt += 1
+    if cnt > 0 and cnt % 100 == 0:
+        time.sleep(300)
+        print(datetime.datetime.now())
+
+from datetime import datetime as dt
+
+df2[df2['bodyt'].isnull()] # Doest not contain body text: 11625
+
+'''
+df2['date_published'] = pd.to_datetime(df2['date_published'])
+df2[df2['date_published'].between(dt(2016,1,1),dt(2022,8,31))]['claim'].isnull()
+df3 = df2[df2['date_published'].between(dt(2016,1,1),dt(2022,8,31))]
+df3[df3['rating'].isnull()][['link','claim']]
+df3[df3['rating'].isnull()][['link','rating']]
+'''
+
+'''
 # csv does not have word limits for each cell. However, excel only can read 32,767 chars. Thus, if, for example, bodyt exceed 32,767 chars, then it may overflow the cell when the csv is opened using excel.
 # Below, the code modifed overflew cells.
 df2 = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_053022.csv")
@@ -322,6 +379,8 @@ for h,ele in zip(header,foo):
     df2[h][14051] = ele
 
 df2.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_053022.csv",index=False)
+'''
+
 
 '''directly add to csv file
 collect_csv = "/Users/agathos/DtotheS/AI-in-the-wild/data/fcs_053022.csv"
@@ -358,6 +417,7 @@ else:
 driver.close()
 '''
 
+'''
 # Combined dataset: 0919 + 0530.
 cols = df2.columns.to_list()
 df = df[cols] # match the order of columns
@@ -368,3 +428,4 @@ len(df2) # 14390
 df = df.append(df2,ignore_index=True)
 
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_091922.csv", index=False)
+'''

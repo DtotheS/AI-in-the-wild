@@ -367,7 +367,9 @@ plt.close()
 
 
 
-#Author by Topic
+## Author by Topic
+# Need to add "None" key word as another keyword?
+
 x = df.groupby(['author']).count().sort_values(['link'],ascending=False)[:].index.tolist()
 # df.groupby(['author']).agg({'key_word':'sum'}).loc['Devika Khandelwal'][0]
 # test = df.groupby(['author']).agg({'key_word':'sum'}).loc["Jinsha"][0]
@@ -379,6 +381,9 @@ import collections
 # list = list(sort_counter)[:10] # top 10 keys
 # list(sort_counter.values())[:10] # values of top 10 keys
 
+## Before run below code, should run these two:
+# 1. line192: namex
+# 2. line 328, 329
 df_author = pd.DataFrame()
 for nn in x:
     print(nn)
@@ -392,12 +397,6 @@ for nn in x:
         df_author = pd.concat([df_author, df2], ignore_index=False, axis=1)
     except:
         pass
-
-    # df_author['%s' % nn] = list(sort_counter)[:10]
-    # df_author['%s_v' % nn] = list(sort_counter.values())[:10]
-    # df_author['%s_p' % nn] = [i / sum(sort_counter.values()) for i in list(sort_counter.values())[:10]]
-    # print(df.groupby(['author_name','primary_category']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:10])
-# df.groupby(['author_name','primary_category']).count().sort_values(['author_name','url'],ascending=False).loc[nn]['url'][:10].index.get_level_values('primary_category')
 
 df['key_word'].isnull().sum() # 2002 vs. 2363
 for name in x[:10]:
