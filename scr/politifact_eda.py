@@ -6,8 +6,8 @@ import numpy as np
 from datetime import datetime as dt
 import csv
 
-df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv")
-len(df) #21595
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv6_16to22.csv")
+len(df) #10710
 df['fc_date']=pd.to_datetime(df['fc_date'])
 df['cdate']=pd.to_datetime(df['cdate'])
 df = df[df['fc_date'].between(dt(2016,1,1),dt(2022,8,31))]
@@ -73,7 +73,7 @@ y = df2.groupby(['rating']).count()['link'].to_list()
 y = [y[-1], y[2], y[3], y[0], y[1], y[4]]
 yp = []
 for i in y:
-    yp.append(str(round(i/len(df) * 100,2))+"%")
+    yp.append(str(round(i/len(df2) * 100,2))+"%")
 
 plt.bar(x,y,label="# FCs")
 for i in range(len(x)):
@@ -148,7 +148,7 @@ plt.subplots_adjust(bottom=0.4, top=0.90)
 plt.title("PF: # FCs by author - Top 20 only")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df2))
 plt.xlabel("Author")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_20author.png",dpi=600)
+# plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/politifact/s_fcs_20author.png",dpi=600)
 plt.show()
 plt.close()
 

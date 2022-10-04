@@ -182,7 +182,7 @@ df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv",
 
 ##################### Crawl FC article body contents ##########################
 df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_092722.csv")
-# df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv4_16to21.csv")
+df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv6_16to22.csv")
 # df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf2022.csv")
 # df = df[df['rating'].isin(['barely-true', 'false','pants-fire'])]
 # df = df.reset_index(drop=True)
@@ -190,13 +190,15 @@ df = pd.read_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/politifact_v4_09272
 df.columns
 # df[['title','cstated_by','tags','summary','bodyt','sources_num','sources']] = None
 
-df['fc_date'] = pd.to_datetime(df['fc_date'])
-len(df) # 21595
-df = df[df['fc_date'].between(dt(2016,1,1),dt(2022,8,31))]
-len(df) #10710
+# df['fc_date'] = pd.to_datetime(df['fc_date'])
+# len(df) # 21595
+# df = df[df['fc_date'].between(dt(2016,1,1),dt(2022,8,31))]
+# len(df) #10710
 
-for i in df.index:
-    if df['title'][i] == None:
+pd.isna(df['title'][9596])
+
+for i in range(len(df)):
+    if pd.isna(df['title'][i]):
         # driver.implicitly_wait(10)
         url = df['link'][i]
         driver.get(url)
@@ -249,8 +251,8 @@ for i in df.index:
         except:
             pass
         print(str(i) + url)
-
-
+df.isnull().sum()
+len(df)
 df.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pfv6_16to22.csv",index=False)
 
 '''

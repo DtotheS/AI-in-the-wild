@@ -10,13 +10,15 @@ from datetime import datetime as dt
 os.getcwd()
 os.chdir("/Users/agathos/DtotheS/AI-in-the-wild/scr")
 
-sn = pd.read_csv("../data/sn_091922.csv")
+sn = pd.read_csv("../data/sn_100222.csv")
 aap = pd.read_csv("../data/aap_090122.csv")
-pf = pd.read_csv("../data/politifact_v3_072122.csv")
+pf = pd.read_csv("../data/pfv6_16to22.csv")
 lg = pd.read_csv("../data/logically_090622_v2.csv")
 
+lg = lg[lg['location']=="United States"] # Only for US.
+
 sn = sn[sn['page_type']=="Fact Check"]
-sn = sn[sn['rating'].isnull()==False]
+sn.isnull().sum()
 len(sn)
 len(pf)
 len(aap)
@@ -37,7 +39,9 @@ aap = aap[aap['fc_date'].between(dt(2019,5,17),dt(2022,8,31))]
 pf = pf[pf['fc_date'].between(dt(2019,5,17),dt(2022,8,31))]
 lg = lg[lg['fc_date'].between(dt(2019,5,17),dt(2022,8,31))]
 
-len(sn) # 5933
+sn = sn[sn['claim'].notnull()]
+
+len(sn) # 5932
 len(aap) # 827
 len(pf) # 5615
 len(lg) # 4338
