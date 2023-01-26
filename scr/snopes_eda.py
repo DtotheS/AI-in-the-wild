@@ -75,26 +75,32 @@ plt.subplots_adjust(bottom=0.4, top=0.90)
 plt.title("Snopes: # FCs for each month (2019-5 ~ 2022-08)")
 plt.xlabel("Date (yyyy-mm)")
 plt.ylabel("number of FCs "+"(Total # FCs: %s)" %len(df))
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_month.png",dpi=600)
+# plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_month.png",dpi=600)
 plt.show()
 plt.close()
 
 # y: FCs, x: ratings
-x = df.groupby(['rating']).count()['url'].index.to_list()
-y = df.groupby(['rating']).count()['url'].to_list()
+
+# x = df.groupby(['rating']).count()['url'].index.to_list()
+# y = df.groupby(['rating']).count()['url'].to_list()
+x = df.groupby(['rating']).count().sort_values(['url'],ascending=False)['url'].index.to_list()
+y = df.groupby(['rating']).count().sort_values(['url'],ascending=False)['url'].to_list()
+
 yp = []
 for i in y:
     yp.append(str(int(round(i/len(df) * 100,0)))+"%")
 
 plt.bar(x,y,label="# FCs")
+plt.ylim([0,1900])
 for i in range(len(x)):
     plt.text(x[i], y[i], yp[i], ha = 'center')
 plt.xticks(np.arange(len(x)),x,rotation=90)
-plt.subplots_adjust(bottom=0.4, top=0.90)
-plt.title("SN: # FCs by Rating")
-plt.ylabel("number of FCs "+"(Total # FCs: %s)"%len(df))
+plt.subplots_adjust(bottom=0.4, top=0.95, right=0.95)
+# plt.title("SN: # FCs by Rating")
+plt.ylabel("Number of articles "+"(Total: %s)"%len(df))
 plt.xlabel("Ratings")
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/s_fcs_rating.png",dpi=600)
+# plt.rcParams.update({'font.size': 9})
+# plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/snopes/sn_rating.png",dpi=600)
 plt.show()
 plt.close()
 

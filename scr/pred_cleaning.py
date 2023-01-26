@@ -14,58 +14,24 @@ import re
 os.getcwd()
 os.chdir("/Users/agathos/DtotheS/AI-in-the-wild/scr")
 
-sn = pd.read_csv("../data/sn_100222.csv")
-aap = pd.read_csv("../data/aap_090122.csv")
-pf = pd.read_csv("../data/pfv6_16to22.csv")
-lg = pd.read_csv("../data/logically_090622_v2.csv")
+plt.rc('font', size=14)
+plt.style.use('seaborn-bright')
 
-
-sn = pd.read_csv("../data/sn_100222.csv")
-aap = pd.read_csv("../data/aap_090122.csv")
-pf = pd.read_csv("../data/pfv6_16to22.csv")
-lg = pd.read_csv("../data/logically_090622_v2.csv")
-
-# lg = lg[lg['location']=="United States"] # Only for US.
-
-sn = sn[sn['page_type']=="Fact Check"]
+#Snopes Data Load
+sn = pd.read_csv("../data/sn_012523_overlaplabeladd.csv") # only contain 2016.1.1. ~ 2022.8.31
+# sn = sn[sn['overlap'] == 0] # only not overlaping claims
 sn.isnull().sum()
-len(sn)
-len(pf)
-len(aap)
-len(lg)
-sn['date_published'] = pd.to_datetime(sn['date_published'])
-aap['fc_date'] = pd.to_datetime(aap['fc_date'])
+len(sn) # 11639
+
+#PF data load
+pf = pd.read_csv("../data/pf_012523_overlaplabeladd.csv") # only contain 2016.1.1. ~ 2022.8.31
+# pf = pf[pf['overlap'] == 0] # only not overlaping claims
 pf['fc_date'] = pd.to_datetime(pf['fc_date'])
-lg['fc_date'] = pd.to_datetime(lg['fc_date'])
-
-max(sn['date_published'].min(),
-aap['fc_date'].min(),
-pf['fc_date'].min(),
-lg['fc_date'].min())
-
-
-sn = sn[sn['date_published'].between(dt(2019,5,17),dt(2022,8,31))]
-aap = aap[aap['fc_date'].between(dt(2019,5,17),dt(2022,8,31))]
-pf = pf[pf['fc_date'].between(dt(2019,5,17),dt(2022,8,31))]
-lg = lg[lg['fc_date'].between(dt(2019,5,17),dt(2022,8,31))]
-
 pf['site'] = "pf"
+len(pf) #10710
 
-sn = sn[sn['claim'].notnull()]
-
-len(sn) # 5932
-len(aap) # 827
-len(pf) # 5615
-len(lg) # 4338
-
-# df = pd.DataFrame()
-# df['claim'] = pd.concat([pf['claim'],sn['claim'],lg['title'],aap['title']],ignore_index=True)
-# df['site'] = pd.concat([pf['site'],sn['content_owner'],lg['site'],aap['site']],ignore_index=True)
-# len(df) == len(pf) + len(sn) + len(lg) + len(aap)
-# enc = [0] * len(pf) + [1]*len(sn) + [2]*len(lg) + [3]*len(aap)
-# len(enc) == len(df)
-# df['label'] = enc
-
+11639 / (11639+10710)
+# create new dataframe
 bdf = pd.DataFrame()
 bdf['claim'] = pd.concat([pf['claim'],sn['claim']],ignore_index=True)
 bdf['site'] = pd.concat([pf['site'],sn['content_owner']],ignore_index=True)
@@ -100,7 +66,7 @@ def cleanText(message):
     words = [lemmatizer.lemmatize(word.strip("\"\'““”").lower().strip()) for word in word_tokenize(message) if word.lower() not in stopwords.words("english")]
     words = [re.sub('[^A-Za-z0-9]+','',ele) for ele in words]
     # Remove some verbs
-    removeli = ['say', 'show', 'u', 's', '2020', '2021', '2022', 'said']
+    removeli = ['say', 'show', 'u', 's', '2016','2017','2018','2019','2020', '2021', '2022', 'said']
     words = [e for e in words if e not in removeli]
     while ("" in words):
         words.remove("")
@@ -135,7 +101,7 @@ plt.figure( figsize=(10,8), facecolor='k')
 plt.imshow(pf_wordcloud)
 plt.axis("off")
 plt.tight_layout(pad=0)
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/pf_cl2.png')
+# plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/pf_cl2.png')
 plt.show()
 
 sn_cloud=WordCloud(width=600,height=400,background_color='white',collocations=False).generate(snc)
@@ -143,7 +109,7 @@ plt.figure(figsize=(10,8),facecolor='k')
 plt.imshow(sn_cloud)
 plt.axis("off")
 plt.tight_layout(pad=0)
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/sn_cl2.png')
+# plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/sn_cl2.png')
 plt.show()
 
 #top 10 pf words
@@ -162,7 +128,7 @@ cdf['pf_word'] = a.index
 cdf['pf_count'] = a.to_list()
 cdf['sn_word'] = b.index
 cdf['sn_count'] = b.to_list()
-cdf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/claim_words_sn_pf.csv", index_label="id")
+cdf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/claim_words_sn_pf2.csv", index_label="id")
 
 ## EDA 2: Compare proporion of sn vs pf within dataset
 plt.figure(figsize=(12,5))
@@ -174,15 +140,15 @@ for i in range(len(bdf['label'].value_counts())):
 # plt.legend(prop={'size': 25})
 plt.xticks([0,1],['pf','sn'],fontsize=20,rotation=360)
 # plt.xticks(np.arange(0,len(dcnt),5), dname[::5], rotation=90)
-plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/sn_pf_prop.png")
+# plt.savefig("/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/sn_pf_prop.png")
 plt.show()
 
 ## FE
+bx = bdf['claim_cl']
 # 1. CounterVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
-# cv=CountVectorizer()
-# x = cv.fit_transform(x)
-# bx = cv.fit_transform(bx)
+cv=CountVectorizer()
+bx = cv.fit_transform(bx)
 
 # 2. TF-IDF
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -235,11 +201,14 @@ accuracy_score(by_test,pred_1)
 confusion_matrix(by_test,pred_1,labels=[0,1])
 precision_recall_fscore_support(by_test,pred_1, average='binary')
 
+## 2. NB
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MaxAbsScaler
 nb=MultinomialNB()
 
-scaler = MinMaxScaler()
+scaler = MaxAbsScaler()
+# scaler = MinMaxScaler()
 scaler.fit(bx) #MNB does not allow negative values, so we need to nomalize
 bx_train_s = scaler.transform(bx_train)
 bx_test_s = scaler.transform(bx_test)
@@ -252,6 +221,8 @@ accuracy_score(by_test,pred_2)
 confusion_matrix(by_test,pred_2,labels=[0,1])
 precision_recall_fscore_support(by_test,pred_2, average='binary')
 
+## 3. SVM
+
 from sklearn.svm import SVC
 svm=SVC()
 svm.fit(bx_train,by_train)
@@ -263,7 +234,6 @@ confusion_matrix(by_test,pred_3,labels=[0,1])
 precision_recall_fscore_support(by_test,pred_3, average='binary')
 
 
-
 # EDA 1: Text length compare: pf vs. sn
 len_text=[]
 for i in bdf['claim_cl']:
@@ -272,29 +242,26 @@ for i in bdf['claim_cl']:
 # add text_length as another column
 bdf['text_length']=len_text
 
+
 import matplotlib.pyplot as plt
-#histogram for pf
+plt.rc('font', size=25)
+#histogram for pf & sn together
 plt.figure(figsize=(12,5))
-bdf[bdf['label']==0]['text_length'].plot(bins=35,kind='hist',color='blue',label='Politifact',alpha=0.5)
-plt.legend()
-plt.xlim([0,300])
-plt.ylim([0,700])
-plt.xlabel('Claim length(char): aver=%s'%round(bdf[bdf['label']==0]['text_length'].mean(),2))
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/len_pf.png')
+bdf[bdf['label']==0]['text_length'].plot(bins=35,kind='hist',label='Politifact (mean length = %s)' %(round(bdf[bdf['label']==0]['text_length'].mean(),1)),alpha=0.5)
+bdf[bdf['label']==1]['text_length'].plot(bins=35,kind='hist',label='Snopes (mean length = %s)' %(round(bdf[bdf['label']==1]['text_length'].mean(),1)),alpha=0.5)
+plt.legend(fontsize=20)
+plt.xlim([0,250])
+# plt.ylim([0,100])
+plt.subplots_adjust(bottom=0.2, top=0.95, right=0.95)
+plt.xlabel('Length of claim (Number of characters)')
+plt.ylabel('Number of claims')
+plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/claim_len.png')
 plt.show()
+plt.close()
 
-bdf[bdf['label']==0]['text_length'].mean()
-bdf[bdf['label']==1]['text_length'].mean()
+round(bdf[bdf['label']==0]['text_length'].mean(),1)
+round(bdf[bdf['label']==1]['text_length'].mean(),1)
 
-# histogram for sn
-plt.figure(figsize=(12,5))
-bdf[bdf['label']==1]['text_length'].plot(bins=35,kind='hist',color='blue',label='Snopes',alpha=0.5)
-plt.legend()
-plt.xlim([0,300])
-plt.ylim([0,700])
-plt.xlabel('Claim length(char): aver=%s'%round(bdf[bdf['label']==1]['text_length'].mean(),2))
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/len_sn.png')
-plt.show()
 
 import seaborn as sns
 sns.set_style('darkgrid')
@@ -311,21 +278,25 @@ for i in range(len(ax)):
     ax[i].set_xlim([0,300])
     ax[i].set_ylim([0,.016])
 
-plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/len_dist.png')
+# plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/len_dist.png')
 plt.show()
 
 ## Check incorrect predictions
 testdf = bdf.iloc[id_test]
-testdf['pred'] = pred_1
-(testdf['label'] == testdf['pred']).sum() # 1902
+testdf['pred'] = pred_3 # pred_3 == SVM result
+(testdf['label'] == testdf['pred']).sum() # 3642
 
-tp = testdf[(testdf['label']==1) & (testdf['pred']==1)] # 986
-fn = testdf[(testdf['label']==1) & (testdf['pred']==0)] # 230: sn but predicted as pf
-tn = testdf[(testdf['label']==0) & (testdf['pred']==0)] # 916
+tp = testdf[(testdf['label']==1) & (testdf['pred']==1)] # 1951: sn sn
+fn = testdf[(testdf['label']==1) & (testdf['pred']==0)] # 361: sn but predicted as pf
+tn = testdf[(testdf['label']==0) & (testdf['pred']==0)] # 1691: pf pf
 fp = testdf[(testdf['label']==0) & (testdf['pred']==1)] # 216: pf but predicted as sn
-
+len(tp)
 len(tp)/(len(tp)+len(fp)) # Precision
 
+len(tp)
+len(fn)
+len(tn)
+len(fp)
 from wordcloud import WordCloud
 for dataset in [tp,fn,tn,fp]:
     foo = " ".join(i for i in dataset['claim_cl'])
@@ -334,10 +305,6 @@ for dataset in [tp,fn,tn,fp]:
     plt.imshow(pf_wordcloud)
     plt.axis("off")
     plt.tight_layout(pad=0)
-    # plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/wc_LR_%s.png') %dataset
+    plt.savefig('/Users/agathos/DtotheS/AI-in-the-wild/img/prediction/wc2_LR_%s.png') %dataset
     plt.show()
     plt.close()
-
-
-
-

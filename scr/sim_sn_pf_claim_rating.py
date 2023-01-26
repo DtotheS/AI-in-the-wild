@@ -16,6 +16,7 @@ pf = pd.read_csv("../data/pfv6_16to22.csv")
 sn = sn[sn['page_type']=="Fact Check"]
 sn.isnull().sum()
 
+
 sn['date_published'] = pd.to_datetime(sn['date_published'])
 pf['fc_date'] = pd.to_datetime(pf['fc_date'])
 
@@ -29,6 +30,7 @@ sn = sn.reset_index(drop=True)
 
 len(sn) # 11639
 len(pf) # 10710
+
 statements = pd.concat([pf['claim'],sn['claim']],ignore_index=True)
 len(statements) == len(pf) + len(sn)
 statements.isnull().sum()
@@ -70,6 +72,11 @@ pf['content_owner'] = "PolitiFact"
 
 sn['overlap'] = y1
 pf['overlap'] = y2
+
+sn.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/sn_012523_overlaplabeladd.csv", index=False)
+pf.to_csv("/Users/agathos/DtotheS/AI-in-the-wild/data/pf_012523_overlaplabeladd.csv", index=False)
+
+len(sn[sn['overlap']==1])
 
 sn_sim_result = {}
 sn_sim_result['sim_score'] = []
