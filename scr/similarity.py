@@ -30,6 +30,7 @@ del zip
 statements = pd.concat([pf.statement,fc.statement],ignore_index=True)
 list(set(fc.category))
 
+
 fc['overlap'] = None
 fc['overmurky'] = None
 for i in range(len(fc)):
@@ -57,34 +58,49 @@ for i in range(len(pf)):
         pf['overmurky'][i] = 0
 
 '''
+len(murky) # 77
+len(overlap) # 56
 fc['overlap'].sum() # 77 correct
 fc['overmurky'].sum() # 77 + 56 = 133 != 130..... not correct..
 pf['overlap'].sum() #correct
 pf['overmurky'].sum() # correct
 
 fc[fc['category']=="murky"] # 53 mismatch with murky file
-## there are some duplicate murkies in the murky file for FCs: e.g., row (1)41 & 42, (2) 50&51, (3) 52&53 => Each pair is the same FCs.
-fc[fc['category']=="overlap"] # 77
-fc[fc['category']=="nonoverlap"] # 195
-fc.category
+## there are some duplicate murkies in the murky file for FCs: e.g., row (1)39 & 40, (2) 48&49, (3) 50&51=> Each pair is the same FCs.
+murky.columns
+murky.PFstatement[39] # Dealing with Governor's tax cut
+murky.PFstatement[40] # Dealing with Governor's hole + surplus
+murky.FCstatement[39] == murky.FCstatement[40] # True: Dealing with Governor's tax cut + hole + surplus
+murky.FCurl[39] == murky.FCurl[40]
+murky.FCstatement[48] == murky.FCstatement[49]
+murky.FCurl[48] == murky.FCurl[49]
+murky.FCstatement[50] == murky.FCstatement[51]
+murky.FCurl[50] == murky.FCurl[51]
+
+len(set(murky.FCurl)) # This should be 53, but it is 52. I found that there are 1 url error.
+from collections import Counter
+len([k for k,v in Counter(list(murky.FCstatement.values)).items() if v >1]) # indeed, there are 3 statements when we check the statement
+len([k for k,v in Counter(list(murky.FCurl.values)).items() if v >1]) # However, there are 4 duplicates urls
+
+[k for k,v in Counter(list(murky.FCstatement.values)).items() if v >1]
+
+[k for k,v in Counter(list(murky.FCurl.values)).items() if v >1]
+murky.FCurl[39]
+murky.FCurl[48]
+murky.FCurl[50]
+
+murky[murky.FCurl == [k for k,v in Counter(list(murky.FCurl.values)).items() if v >1][0]] # These two have the same urls, but different statements.
+murky.iloc[20] 
+murky.iloc[25]
+# Links are not working, so I could not figure out which one is correct.
 '''
 
-''' Investigation of 3 missing murkies.
-## there are some duplicate murkies in the murky file for FCs: e.g., row (1)41 & 42, (2) 50&51, (3) 52&53 => both are the same FCs.
-len(fc.url)
-for i in murky.FCurl.values:
-    if any(i[:140] in url for url in fc[fc['category']=="murky"]['url']):
-        print("yes")
-    else:
-        print(i)
-'''
 
 '''
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
-def create_heatmap(similarity,labels_ind,labels_col, cmap="YlGnBu"):
+def creat_heatmap(similarity,labels_ind,labels_col, cmap="YlGnBu"):
     df = pd.DataFrame(similarity)
     df.columns = labels_col
     df.index = labels_ind
@@ -93,13 +109,13 @@ def create_heatmap(similarity,labels_ind,labels_col, cmap="YlGnBu"):
 '''
 
 '''Word Embeddings'''
-'''
+
 # sklearn one-hot-encoding = bag-of-words = sklearn CountVectorizer()
 vectorizer = CountVectorizer(lowercase=True, stop_words='english')
 X = vectorizer.fit_transform(statements)
 arr = X.toarray()
 vectorizer.get_feature_names_out() # words
-'''
+
 # TF-IDF
 ## TF-IDF vectors are an extension of the one-hot encoding model. Instead of considering the frequency of words in one document, the frequency of words across the whole corpus is taken into account. The big idea is that words that occur a lot everywhere carry very little meaning or significance. For instance, trivial words like “and”, “or”, “is” don’t carry as much significance as nouns and proper nouns that occur less frequently.
 ## Mathematically, Term Frequency (TF) is the number of times a word appears in a document divided by the total number of words in the document. And Inverse Document Frequency (IDF) = log(N/n)
@@ -115,9 +131,10 @@ len(pf) #1178
 pfarr = arr[:1178]
 fcarr = arr[1178:]
 
-# create_heatmap(cosine_similarity(pfarr,fcarr),pflist,fclist)
-# plt.show()
-
+'''
+creat_heatmap(cosine_similarity(pfarr,fcarr),pf.id,fc.id)
+plt.show()
+'''
 
 ''' Word2Vec: Works very poor
 import spacy
@@ -188,6 +205,8 @@ plt.plot(xs,fc_f1,label = "Washington Post")
 plt.legend()
 plt.show()
 
+max(pf_f1)
+max(fc_f1)
 np.argmax(pf_f1) # x=0.5
 np.argmax(fc_f1) # x=0.4
 xs[np.argmax(pf_f1)]
@@ -215,6 +234,22 @@ plt.xlabel('Predictions', fontsize=18)
 plt.ylabel('Actuals', fontsize=18)
 plt.title('Confusion Matrix', fontsize=18)
 plt.show()
+
+### Visualization using scikitplot
+import scikitplot as skplt
+from sklearn.metrics import classification_report, confusion_matrix,precision_recall_fscore_support,accuracy_score
+skplt.metrics.plot_confusion_matrix(pf_true, pf_y)
+plt.show()
+
+print(classification_report(pf_true, pf_y))
+
+accuracy = accuracy_score(pf_true, pf_y)
+score = precision_recall_fscore_support(pf_true, pf_y, average='weighted')
+precision, recall, fscore, k = score
+print("Accuracy:",accuracy)
+print("Precision:",precision)
+print("Recall:",recall)
+print("F score:",fscore)
 
 # Print the confusion matrix using Matplotlib: Factchecker
 x = 0.40 # similarity criterion
